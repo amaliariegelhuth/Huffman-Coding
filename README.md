@@ -1,18 +1,18 @@
-## Problem Set 7: Huffman coding
+# Problem Set 7: Huffman coding
 
-### Due Tuesday, November 5 @ 11:59pm
+## Due Tuesday, November 5 @ 11:59pm
 
 [Click here for an up-to-date version of this README](https://github.com/BC-CSCI-1102-F18-MW/ps7/blob/master/README.md) 
 
 ---
 
-This is a pair problem set. Find one partner to work with. If you don't know anyone yet, email me, and I will try match you up with someone else who is also looking for a partner. **Please identify both team members in the comments at the top of your files.**
+## Problem Set Overview
 
----
+This is a pair problem set. Find one partner to work with. If you do not have a partner, email me, and I will try match you up with someone else who is also looking for a partner. **Please identify both team members in the comments at the top of your files.**
 
-## Problem Set 7 : Huffman Coding
+### Goals
 
-In this problem set, you will team up with one other classmate to design and develop a program called **Huff.java** which will perform Huffman compression of a text file. In the next problem set, you will work together to develop a program called **Puff.java** which will perform the corresponding decompression.
+In this problem set, you will team up with one other classmate to design and develop a program called **Huff.java** which will perform Huffman compression of a text file. In the next problem set (PS8), you will work together to develop a program called **Puff.java** which will perform the corresponding decompression.
 
 Algorithms of this kind are sometimes called *codecs*. Huffman coding is a *lossless compression* algorithm that achieves a very respectable rate of compression. In this problem set you are to design and develop the Huff program. After completing this problem set and the next, your team's pair of programs should have the property that for every text file `f.txt`
 
@@ -23,7 +23,7 @@ Algorithms of this kind are sometimes called *codecs*. Huffman coding is a *loss
 > diff f.txt original.txt    # compares two files to see if they are different.
 >                            # no message means no differences
 ```
-### Files including with this repository
+### Files included with this repository
 
 In addition to a hidden `.gitignore` file, this folder contains:
 
@@ -32,13 +32,17 @@ Huff.jar        README.md       samples/
 Puff.jar        img/            src/
 ```
 
-The `src` directory contains a `FileIO` ADT and an implementation of that ADT that you can use for reading and writing files. More on that below. 
+The `src` directory contains `FileIO.java`, an interface (ADT) for reading input and writing output, and an implementation of that interface called `FileIOC.java`. You can use this class for reading in the file you want to compress and for writing out the compressed file. (You will also use this class to read in a compressed file and write it out to uncompressed format in the next problem set.) More information on the FileIOC.java class is below.
+
+In addition, the `src` directory contains skeleton code for `Huff.java`.
 
 The `samples` directory contains a few test files that you can use to test your code.
 
-The file `Huff.jar` is a Java archive containing a reference implementation of the *compression* half of the codec. The file `Puff.jar` is a Java archive containing a reference implementation of the *decompression* half of the codec. These `.jar` files contain only compiled Java classes. You can use the jar files to test whether your code is doing what it should be doing. If you can compress a file with your `Huff.java` implementation, and decompress it with the included `Puff.jar` file, then your code works. You can also inspect the output of `Huff.jar` and compare it to the output of your code for `Huff`.
+The file `Huff.jar` is a Java archive containing a reference implementation of the *compression* half of the codec. The file `Puff.jar` is a Java archive containing a reference implementation of the *decompression* half of the codec. These `.jar` files contain only compiled Java classes. 
 
-Without writing any code, you can try out either half of the codec as follows.
+You can use these jar files to test whether your code is doing what it should be doing. If you can compress a file with *your* `Huff.java` implementation, and decompress it with the included `Puff.jar` file, then your code works. You can also inspect the output of `Huff.jar` and compare it to the output of your code for `Huff.java`.
+
+Without writing any code, you can try out either half of the codec from a command line as follows.
 
 ```
 > cp samples/lincoln.txt .              # make a copy of lincoln.txt in your current directory
@@ -49,27 +53,45 @@ Without writing any code, you can try out either half of the codec as follows.
 >                                       # no differences :)
 ```
 
-#### Generalities
+### Three tasks
 
-This is a somewhat complicated program with two major parts (i.e., Huff and Puff). You should think carefully about the overall design of the program with an eye toward figuring out what ADTs might be useful and which what pieces of the  implementation might be shared between the Huff and Puff programs. Obviously, the shared parts should be encapsulated in separate files, hopefully ADTs, with appropriate functions and documentation.
+There three tasks involved in this problem set:
 
-You're going to make mistakes. In order to figure out what is wrong it will be important to be able to print out string representations of the various items in play. For this reason, it's essential that each ADT that you create have a reasonable `toString` function.
+1. Reading in a text file and keeping track of how many times you see each character in order to create a frequency table.
+
+2. Building a binary tree that you will then traverse to determine the bit sequence representing each character in your text (i.e., the Huffman coding for your input text), as demonstrated in class.
+
+3. Writing this information, along with an encoded version of the original text, to a binary file, which will be your compressed file. 
+
+I provide quite a lot of code to get you started, but this will probably be a difficult problem set. You should start working on it right away. 
+
+You should think carefully about the overall design of the program because much of what you create for this problem set might be shared with the Puff program you will be writing for PS8. Obviously, the shared parts should be encapsulated in separate files with appropriate functions and documentation so that you can use these shared parts in both the Huff and Puff programs.
+
+
+## Step 1: Creating a frequency table
+Create a HashMap as a member variable in Huff.java. Read in the input file as shown in Huff.java and consider each character. If the character aready exists
+
+
+
+## Step 2: Building the binary Huffman tree
+
+
+
+
+## Step 3: Writing to a binary file
+
 
 #### Working with Binary Files
 
-The Huff and Puff programs write and read binary files. So it will be helpful to have a tool that lets you view the contents of binary files. If you are using a unix-based system such as MacOS you may be able to use the built-in **emacs** editor from the command line, as in:
+The Huff and Puff programs write and read binary files. So it will be helpful to have a tool that lets you view the contents of binary files. 
 
-```
-> emacs file.zip
-```
+On a Mac or Unix system, there is a command line utility called `hexdump` that you can use to take any file and print out its hexadecimal representation. Suppose you used the `Puff.jar` to compress the sample file `lincoln.txt`. From a command line you can type:
 
-The emacs editor is very powerful but super-arcane.  You can put emacs into "hexadecimal mode" by typing `esc x` and then `hexl-mode`.  Note that `esc` refers to the key labeled "esc", upper left on your keyboard.  You can then move around the file using the arrow keys. You can exit emacs by typing `control-x control-c` (i.e., holding down the key labeled `control` and then hitting `x` and then `c` while still holding down the `control` key.) And if something goes wrong you can cancel things in emacs by typing `control-g`.
+`hexdump lincoln.zip` 
+
+and the hexadecimal version 
 
 If you're using Windows (or if emacs isn't on your system or doesn't excite you) you can always troll around on the web for free hex-editors. I found <a href="http://download.cnet.com/HxD-Hex-Editor/3000-2352_4-10891068.html">HxD</a> for Windows and <a href="http://www.macupdate.com/app/mac/6455/hexeditor">HexEditor</a> for MacOS. I tried the latter and it worked well enough. I didn't try the former but the reviews seemed OK.
-
-### Ingredients
-
-#### Input/Output
 
 You'll find a `FileIO` ADT in the `src` directory. There are four routines there to support the IO required of both your programs. 
 
