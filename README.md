@@ -34,11 +34,11 @@ Puff.jar        img/            src/
 
 The `src` directory contains `FileIO.java`, an interface (ADT) for reading input and writing output, and an implementation of that interface called `FileIOC.java`. You can use this class for reading in the file you want to compress and for writing out the compressed file. (You will also use this class to read in a compressed file and write it out to uncompressed format in the next problem set.) More information on the FileIOC.java class is below.
 
-In addition, the `src` directory contains skeleton code for `Huff.java`.
+In addition, the `src` directory contains well commented starter code for `Huff.java`. You might not use all this code, but it will help you read in a file character by character and write out to a binary file. 
 
 The `samples` directory contains a few test files that you can use to test your code.
 
-The file `Huff.jar` is a Java archive containing a reference implementation of the *compression* half of the codec. The file `Puff.jar` is a Java archive containing a reference implementation of the *decompression* half of the codec. These `.jar` files contain only compiled Java classes. 
+The file `Huff.jar` is a Java archive containing a reference implementation of the *compression* half of the codec. The file `Puff.jar` is a Java archive containing a reference implementation of the *decompression* half of the codec. These `.jar` files contain only compiled Java classes. You will not be able to view the actual code without sneaky efforts.
 
 You can use these jar files to test whether your code is doing what it should be doing. If you can compress a file with *your* `Huff.java` implementation, and decompress it with the included `Puff.jar` file, then your code works. You can also inspect the output of `Huff.jar` and compare it to the output of your code for `Huff.java`.
 
@@ -63,17 +63,31 @@ There three tasks involved in this problem set:
 
 3. Writing this information, along with an encoded version of the original text, to a binary file, which will be your compressed file. 
 
-I provide quite a lot of code to get you started, but this will probably be a difficult problem set. You should start working on it right away. 
+I provide some code to get you started, but this will probably be a difficult problem set. You should start working on it right away. 
 
 You should think carefully about the overall design of the program because much of what you create for this problem set might be shared with the Puff program you will be writing for PS8. Obviously, the shared parts should be encapsulated in separate files with appropriate functions and documentation so that you can use these shared parts in both the Huff and Puff programs.
 
 
 ## Step 1: Creating a frequency table
-Create a HashMap as a member variable in Huff.java. Read in the input file as shown in Huff.java and consider each character. If the character aready exists
+Create a HashMap in Huff.java that will serve as your frequency table. It will map a character to information about that character, in particular the frequency. You should consider creating a class for storing information about a character (e.g., frequency, Huffman code) that can serve as the values in this HashMap. 
 
+Read in the input file as shown in Huff.java and consider each character. If the character aready exists, add 1 to its current total in the HashMap. Otherwise, enter 1 in its value in the HashMap. Again, you might be mapping from chars to some class that stores information about the char, but if it's easier, you can start just by mapping from char to frequency.
 
 
 ## Step 2: Building the binary Huffman tree
+Next you are going to build a Huffman tree that you will be able to traverse to generate the Huffman code (i.e., the sequence of 1s and 0s) for each character, just as shown in class on October 22 and 24. This is one way to do this:
+
+1. Create  a HuffTree class that you can use to implement a binary tree-type data structure. Here are some elements it should contain: 
+* A Node inner class that contains pointers to right child node, left child node, and parent node, along with the character label itself and a weight. It will also be helpful to have a toString() method on Node just for sanity checking.
+* A member variable that is a pointer to the top Node.
+* A member variable keeping track of the size. 
+* HuffTree should implement Comparable, which means that it will need a compareTo() method. The compareTo() method will compare the weights of two HuffTrees so that you can store HuffTrees in a java PriorityQueue. 
+* You should have a method that can traverse the tree down to its leaf nodes and see what sequences of left and right turns (i.e., 0s and 1s) were required to arrive at each leaf node. This will be the Huffman code of the character at that leaf node.
+
+2. For each character in your HashMap, create a HuffTree instance. The top will point at a Node that has null pointers to parent, right child, and left child, and has the character value set to the character and the weight value set to the frequency of that character.
+
+3. Put all of these HuffTrees in a Java PriorityQueue. (*You don't need to create your own priority queue! Use Java's implementation, which you can read about [here](https://docs.oracle.com/javase/8/docs/api/java/util/PriorityQueue.html)*). You can create a PriorityQueue by adding elements one by one or by giving it a whole ArrayList of elements.
+
 
 
 
