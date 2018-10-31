@@ -81,22 +81,22 @@ Next you are going to build a Huffman tree that you will be able to traverse to 
 * A `Node` inner class that contains pointers to right child node, left child node, and parent node, along with a variable to store the character and a variable to store the weight. Non-leaf nodes will have null for their character variable, while leaf nodes will have null for their right and left child nodes. Note that it will be helpful to have a `toString()` method on `Node` just for sanity checking. 
 * A member variable that is a pointer to the top `Node`.
 * A member variable keeping track of the size. 
-* `HuffTree` should implement `Comparable`, which means that it will need a `compareTo()` method. The `compareTo()` method will compare the weights of two `HuffTree`s so that you can store `HuffTree`s in a Java `PriorityQueue` object. 
-* You should have a method that can traverse a `HuffTree` from its top node down to its leaf nodes in order to determine what sequences of left and right turns (i.e., 0s and 1s) were required to arrive at each leaf node. This will be the Huffman code of the character at that leaf node.
+* `HuffTree` should implement `Comparable`, which means that it will need a `compareTo()` method. The `compareTo()` method will compare the weights of two `HuffTrees` so that you can store `HuffTrees` in a Java `PriorityQueue` object. 
+* You should have a method that can traverse a `HuffTree` from its top node down to its leaf nodes in order to determine what sequences of left and right turns (i.e., 0s and 1s) that were required to arrive at each leaf node. This will be the Huffman code of the character at that leaf node.
 
-2. For each character in your `HashMap`, create a `HuffTree` instance. Initially, the `top` of each `HuffTree` will point at a `Node` that has null pointers for its parent, right child, and left child, and has the character variable set to the character and the weight variable set to the frequency of that character.
+2. For each character key in your `HashMap`, create a `HuffTree` instance. Initially, the `top` of each `HuffTree` will point at a `Node` that has null pointers for its parent, right child, and left child, and has the character variable set to the character and the weight variable set to the frequency of that character.
 
 3. Put all of these `HuffTree`s in a Java `PriorityQueue`. (*You don't need to create your own priority queue! Use Java's implementation, which you can read about [here](https://docs.oracle.com/javase/8/docs/api/java/util/PriorityQueue.html)*). You can create a `PriorityQueue` by adding elements one by one with add() or by giving it a whole Collection (e.g., ArrayList) of elements as an argument to the constructor.
 
 4. You now have a `PriorityQueue` with one `HuffTree` for each character. While there is more than one `HuffTree` in the `PriorityQueue`, `poll()` off the two `HuffTree`s with the smallest weights, **t1** and **t2**. Construct a new `HuffTree` **t** with **t1** and **t2** as left and right children (respectively) and with weight = t1.weight() + t2.weight(). Insert the new `HuffTree` **t** into the priority queue.
 
-5. After merging all these `HuffTree`s, the `PriorityQueue` now contains exactly one element: the Huffman coding tree for the input text. Remove the remaning `HuffTree` from the priority queue. Recursively walk the coding tree recording the bit path P (i.e., the Huffman code, the sequence of 0s and 1s). I have included pseudocode for reading off the leaves of a tree at the end of this README.
+5. After merging all these `HuffTree` objects, the `PriorityQueue` now contains exactly one element: the Huffman coding tree for the input text. Remove the remaning `HuffTree` from the priority queue. Recursively walk the tree recording the bit path P (i.e., the Huffman code, the sequence of 0s and 1s). I have included pseudocode for reading off the leaves of a tree at the end of this README.
 
 * When the recursive walk arrives at a leaf with symbol A, you will know the Huffman code (i.e., the path P, the sequence of 0s and 1s) for character A. 
 
-* In the `HashMap` storing the frequency table, you (hopefully) have keys that are characters and values that are instances of some class that stores information about a character. This class should have a variable where you can store its Huffman code, i.e., the binary path P of 0s and 1s. Update character A's Huffman code in the `HashMap` frequency table to record the binary path P that led from the top to leaf A.
+* In the `HashMap` storing the frequency table, you (hopefully) have keys that are chars and values that are instances of some class that stores information about a character. This class should have a variable where you can store its Huffman code, i.e., the binary path P of 0s and 1s. Update character A's Huffman code in the `HashMap` frequency table to record the binary path P that led from the top to leaf A.
 
-6. The `HashMap` storing the frequency table now has the information required to write the variable length codes to the binary output file.
+6. The `HashMap` storing the frequency table will now have the information required to write the variable length codes to the binary output file.
 
 ## Step 3: Writing to a binary file
 You will use the S&W `BinaryOut` class, an instance of which is created by the `FileIOC` class in `Huff.java`, to print out to the compressed binary file. 
@@ -105,9 +105,9 @@ You will use the S&W `BinaryOut` class, an instance of which is created by the `
 
 2. Write out the signature two-byte code (0x0bc0), which identifies the file as our special zip file. (This and all of the following steps that involve writing out to the binary file will use the overloaded `write()` method  in the `BinaryOut` class, as shown in the `Huff.java` code I have provided.)
 
-3. Write out, as an integer (32 bits, i.e., 4 bytes), the number of symbols in the frequency table HashMap.
+3. Write out, as an integer (32 bits, i.e., 4 bytes), the number of chars (keys) in the frequency table `HashMap`.
 
-4. Next write out the symbol frequency information. For each key in the symbol table, write the key (i.e., the character) using one byte and write its integer frequency using 4 bytes. Remember, a char type is really just an integer value that corresponds to the decimal ASCII code for that char. To write out a char using only one byte, you can use the version of `write()` in `BinaryOut` that takes two arguments: a char and the number of bits in the char that you want to print out.
+4. Next write out the symbol frequency information. For each key in the symbol table, write the key (i.e., the character) using one byte and write its integer frequency using 4 bytes. Remember, a char type is really just a value that corresponds to the decimal ASCII code for that char. To write out a char using only one byte, you can use the version of `write()` in `BinaryOut` that takes two arguments: a char and the number of bits in the char that you want to print out.
 
 5. Reopen the input file, and process it character by character.
 
@@ -125,7 +125,7 @@ You will use the S&W `BinaryOut` class, an instance of which is created by the `
 
 #### Working with binary files: hexdump
 
-The Huff and Puff programs write and read binary files. So it will be helpful to have a tool that lets you view the contents of binary files so you can make sure you are printing out the correct bits and bytes.
+The Huff and Puff programs write and read binary files, so it will be helpful to have a tool that lets you view the contents of binary files so you can make sure you are printing out the correct bits and bytes.
 
 On a Mac or Unix system, there is a command line utility called `hexdump` that you can use to take any file and print out its hexadecimal representation. Suppose you used the `Puff.jar` to compress the sample file `lincoln.txt`. From a command line you can type:
 
@@ -146,13 +146,13 @@ http://www.asciitable.com
 
 #### Bits of variable length
 
-Huffman codes are *variable length* codes. For example, the letter `'A'` may be represented by the 3-bit string `101` while the letter `'B'` may be represented by the 2-bit string `11`. Remember: you can't just take the string of 0s and 1s for a code, conver it to an int and print it out. If you do, you will be unnecessarily adding lots of extra zeros at the front in order to make it 32 bits. You are trying to write the fewest bits possible to your binary file. 
+Huffman codes are *variable length* codes. For example, the letter `'A'` may be represented by the 3-bit string `101` while the letter `'B'` may be represented by the 2-bit string `11`. Remember: you can't just take the string of 0s and 1s for a code, convert it to an int and print it out. If you do, you will be unnecessarily adding lots of extra zeros at the front in order to make it 32 bits. You are trying to write the fewest bits possible to your binary file. 
 
 Some options for printing out only the bits you need are discussed above in item 6 of Step 3.
 
 #### The char data type and ASCII representations
 
-Both the Huff and Puff programs will require a table data structure that allows them to look up information about symbols (i.e., characters) that occur in the input text. As you know, characters are represented by small integers. For example, the ASCII-assigned integer representation of the letter 'A' is 65. Find an ASCII table (like [this one](http://www.asciitable.com)) that includes both decimal and hex values for each character so that you can make sure you're doing everything right. 
+Both the Huff and Puff programs will require a table data structure (a `HashMap`) that allows them to look up information about symbols (i.e., characters) that occur in the input text. As you know, characters are represented by small integers. For example, the ASCII-assigned integer representation of the letter 'A' is 65. Find an ASCII table (like [this one](http://www.asciitable.com)) that includes both decimal and hex values for each character so that you can make sure you're doing everything right. 
 
 Java has a 16-bit (2-byte) char data type. When you write out to the binary file, you are required to use only 8 bits in your frequency table. I discuss a way to write out a 16-bit char to 8 bits in the binary file above, in part 4 of Step 3. 
 
@@ -181,6 +181,6 @@ To actually get the string of zeros and ones, you'll need to have an additional 
 
 ## Final words
 
-This is hard, so get started early. If you can do this, you are officially a great programmer.
+This is hard, so get started early. If you can do this, you are doing great!
 
 When you turn your code in, write lots of comments. Please don't ask me about null pointer exception without trying to figure them out yourself by printing stuff out to the screen.
