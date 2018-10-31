@@ -78,7 +78,7 @@ Read in the input file as shown in `Huff.java` and consider each character. If t
 Next you are going to build a Huffman tree that you will be able to traverse to generate the Huffman code (i.e., the sequence of 1s and 0s) for each character, just as shown in class on October 22 and 24. Here is one way to do this:
 
 1. Create  a `HuffTree` class that you can use to implement a binary tree data structure. Here are some elements it probably should contain: 
-* A `Node` inner class that contains pointers to right child node, left child node, and parent node, along with a variable to store the character and a variable to store the weight. It will also be helpful to have a `toString()` method on `Node` just for sanity checking.
+* A `Node` inner class that contains pointers to right child node, left child node, and parent node, along with a variable to store the character and a variable to store the weight. Non-leaf nodes will have null for their character variable, while leaf nodes will have null for their right and left child nodes. Note that it will be helpful to have a `toString()` method on `Node` just for sanity checking. 
 * A member variable that is a pointer to the top `Node`.
 * A member variable keeping track of the size. 
 * `HuffTree` should implement `Comparable`, which means that it will need a `compareTo()` method. The `compareTo()` method will compare the weights of two `HuffTree`s so that you can store `HuffTree`s in a Java `PriorityQueue` object. 
@@ -90,7 +90,7 @@ Next you are going to build a Huffman tree that you will be able to traverse to 
 
 4. You now have a `PriorityQueue` with one `HuffTree` for each character. While there is more than one `HuffTree` in the `PriorityQueue`, `poll()` off the two `HuffTree`s with the smallest weights, **t1** and **t2**. Construct a new `HuffTree` **t** with **t1** and **t2** as left and right children (respectively) and with weight = t1.weight() + t2.weight(). Insert the new `HuffTree` **t** into the priority queue.
 
-5. After merging all these `HuffTree`s, the `PriorityQueue` now contains exactly one element: the Huffman coding tree for the input text. Remove the remaning `HuffTree` from the priority queue. Recursively walk the coding tree recording the bit path P (i.e., the Huffman code, the sequence of 0s and 1s). 
+5. After merging all these `HuffTree`s, the `PriorityQueue` now contains exactly one element: the Huffman coding tree for the input text. Remove the remaning `HuffTree` from the priority queue. Recursively walk the coding tree recording the bit path P (i.e., the Huffman code, the sequence of 0s and 1s). I have included pseudocode for reading off the leaves of a tree at the end of this README.
 
 * When the recursive walk arrives at a leaf with symbol A, you will know the Huffman code (i.e., the path P, the sequence of 0s and 1s) for character A. 
 
@@ -107,70 +107,80 @@ You will use the S&W `BinaryOut` class, an instance of which is created by the `
 
 3. Write out, as an integer (32 bits, i.e., 4 bytes), the number of symbols in the frequency table HashMap.
 
-4. Next write out the symbol frequency information. For each key in the symbol table, write the key (i.e., the character) using one byte (i.e., as a char) and write its integer frequency using 4 bytes (i.e., as an int).
+4. Next write out the symbol frequency information. For each key in the symbol table, write the key (i.e., the character) using one byte and write its integer frequency using 4 bytes. Remember, a char type is really just an integer value that corresponds to the decimal ASCII code for that char. To write out a char using only one byte, you can use the version of `write()` in `BinaryOut` that takes two arguments: a char and the number of bits in the char that you want to print out.
 
-5. Reopen the input file.
+5. Reopen the input file, and process it character by character.
 
-6. For each occurrence of a character in the input file, look up its bit pattern in the frequency table and write it out to the binary file. You have two options for doing this using the `write()` method in `BinaryOut`.
+6. For each character in the input file, look up its bit pattern in the frequency table and write it out to the binary file. You have two options for doing this using the `write()` method in `BinaryOut`:
 
 * You can proceed through the string of 0s and 1s, print out each as a boolean: false for 0 and true for 1.
 
-* You can convert the string of 0s and 1s to an int using `Integer.parseInt`, with the first argument being the string of 0s and 1s and the second argument being the radix, 2. This will create an int that corresponds to the value expressed by string of 0s and 1s in binary. You can then call the `write()` method of `BinaryOut`
+* You can convert the string of 0s and 1s to an int using `Integer.parseInt()`, with the first argument being the String of 0s and 1s and the second argument being the int radix, 2. This will create an int that corresponds to the value expressed by string of 0s and 1s in binary. You can then call the `write()` method of `BinaryOut` with two arguments: the int you just created and the number of bits you want to print, which will be length of the original string.
 
+7. Close the file.
 
-#### Working with Binary Files
+---
 
-The Huff and Puff programs write and read binary files. So it will be helpful to have a tool that lets you view the contents of binary files. 
+## Helpful Hints
+
+#### Working with binary files: hexdump
+
+The Huff and Puff programs write and read binary files. So it will be helpful to have a tool that lets you view the contents of binary files so you can make sure you are printing out the correct bits and bytes.
 
 On a Mac or Unix system, there is a command line utility called `hexdump` that you can use to take any file and print out its hexadecimal representation. Suppose you used the `Puff.jar` to compress the sample file `lincoln.txt`. From a command line you can type:
 
 `hexdump lincoln.zip` 
 
-and the hexadecimal version 
+and the hexadecimal version of the file will appear, as demonstrated in class on Monday, October 29.
 
-If you're using Windows (or if emacs isn't on your system or doesn't excite you) you can always troll around on the web for free hex-editors. I found <a href="http://download.cnet.com/HxD-Hex-Editor/3000-2352_4-10891068.html">HxD</a> for Windows and <a href="http://www.macupdate.com/app/mac/6455/hexeditor">HexEditor</a> for MacOS. I tried the latter and it worked well enough. I didn't try the former but the reviews seemed OK.
+If you're using Windows, have a look around the web for hex viewers and editors. In the latest version of Windows, there may be a utility included as part of the powershell, so give it a try from the terminal in Atom.
 
-You'll find a `FileIO` ADT in the `src` directory. There are four routines there to support the IO required of both your programs. 
+If you're having trouble wrapping your head around all the different bases (decimal, binary, and hex), check out this very useful online conversion tool:
+
+https://www.rapidtables.com/convert/number/
+
+And don't forget to find a handy ASCII table for when you are reading your hexdump and you want to make sure you've written out the right characters.
+
+http://www.asciitable.com
 
 
-#### Working with Bits and Variable Length Patterns of Bits
+#### Bits of variable length
 
-Huffman coding represents text using variable length bit strings. Short bit strings can be represented in high-level programming languages like Java by using values of type `int`. Ints in Java are 32 bits long. Dr. Java's *Interactions* window is an excellent tool for experimenting with binary representations. Note the use of the `String.format` function together with the hexadecimal field specifier `%x`.
+Huffman codes are *variable length* codes. For example, the letter `'A'` may be represented by the 3-bit string `101` while the letter `'B'` may be represented by the 2-bit string `11`. Remember: you can't just take the string of 0s and 1s for a code, conver it to an int and print it out. If you do, you will be unnecessarily adding lots of extra zeros at the front in order to make it 32 bits. You are trying to write the fewest bits possible to your binary file. 
 
-![interactions](./img/interactions.jpeg)
+Some options for printing out only the bits you need are discussed above in item 6 of Step 3.
 
-We can turn bits on and move them around using bit-wise or and multiplication (or division) by 2.
+#### The char data type and ASCII representations
 
-#### An ADT for Variable Length Strings of Bits
+Both the Huff and Puff programs will require a table data structure that allows them to look up information about symbols (i.e., characters) that occur in the input text. As you know, characters are represented by small integers. For example, the ASCII-assigned integer representation of the letter 'A' is 65. Find an ASCII table (like [this one](http://www.asciitable.com)) that includes both decimal and hex values for each character so that you can make sure you're doing everything right. 
 
-Huffman codes are *variable length* codes. For example, the letter `'A'` may be represented by the 3-bit string `101` while the letter `'B'` may be represented by the 2-bit string `11`. So in order to represent a variable length bit string in Java it will be convenient to pair the int described above with a second integer specifying the length of the string of bits.
+Java has a 16-bit (2-byte) char data type. When you write out to the binary file, you are required to use only 8 bits in your frequency table. I discuss a way to write out a 16-bit char to 8 bits in the binary file above, in part 4 of Step 3. 
 
-Of course, when we have two values that are related in this way, it usually makes sense to think about encapsulating them in an ADT with appropriate operations. As you know, in Java, an ADT can be specified by an interface and implemented by a class.
+#### Recursively printing out the leaves of a tree
 
-#### Symbol Tables --- Representing Information about Input Symbols
+To print out the leaves of a binary tree you can have a void method whose argument is a node. You can call the method originally by providing the argument top.
 
-Both the Huff and Puff programs will require a table data structure that allows them to look up information about symbols (i.e., characters) that occur in the input text. Tables that associate symbols with information are usually called *symbol tables*. This is the subject of section 3.1 of our textbook.  For the purposes of this project, the symbols are characters. As you know, characters are represented by small integers, usually 8 or 16 bits. For example, the ASCII-assigned integer representation of the letter 'A' is 65. This is a base 10 numeral, it is more common to use its hexadecimal equivalent 0x41. (Note that 0x41 = 4 x 16^1 + 1 x 16^0 = 4 x 16 + 1 x 1 = 64 + 1 = 65.)  In order to print the character associated with one of these numbers, the number would need to be associated with the **char** type.  For most purposes in this application though, you will find it more convenient to work with the characters in the source file as **int**s or even wrapped as **Integer**s.
+```
+if the node is null
+  return
 
-There are many ways to implement symbol tables in Java. For the purposes of this problem set, you'll want to look at the `java.util.Map<K, V>` interface. You can use any implementing class that you would like but I recommend using the `java.util.HashMap<K, V>` implementation.
+if the leftchild and rightchild are null
+  you are at a leaf, so print out the character value of that node
+  
+if the left child is not null
+  call the method on the left child
+  
+if the right child is not null
+  call the method on the right child
+  
+```
 
-What information will you need to store in the symbol table? Two different pieces of information about each input symbol will be required in the Huff program. First, an integer **frequency** will need to be computed that represents the number of occurrences of the given symbol in the input text. The second piece of information required for each symbol is the **binary bit pattern** assigned to the symbol by the algorithm. This latter piece will ultimately be written to the output file.
+To actually get the string of zeros and ones, you'll need to have an additional argument that is a string where you can store the 0s and 1s. When you call the method recursively, you'll add 0 or 1 to the string argument, depending on whether you have a left child or a right child.
 
-The frequency information is easily computed from the input file simply by reading the characters in the file and counting their occurrences. The frequency information will be needed in order to construct the Huffman coding tree as described below.
+---
 
-The binary bit pattern can be represented as an object encapsulating the pair of ints as described above. Since we now have another pair of related values (symbol frequency and bit string), it again makes sense to think of encapsulating these two items in an ADT of some kind.
+## Final words
 
-#### Huffman Trees
+This is hard, so get started early. If you can do this, you are officially a great programmer.
 
-Another important ingredient for the program is the Huffman coding tree.  A Huffman tree is a simple binary tree data structure in which each node has an integer weight. Huffman trees are `Comparable`: one tree is compared against another by comparing their weights.
-
-What other fields are required? Leaf nodes require an additional integer symbol field while interior nodes (i.e., non-leaf nodes) require two Huffman trees left and right. In order to simplify the trees it's probably best to just have one tree node type with all 4 fields. When processing leaf nodes the symbol and weight fields would be used and the left and right fields would be ignored. For interior nodes weight, left and right fields would be used and the symbol field would be ignored.
-
-I would like to stress the importance of having a reasonable `toString` function for Huffman trees. It will be essential for debugging.
-
-As we have discussed, the Huffman coding tree can be constructed from the information in the symbol table using a priority queue. See the description of the algorithm below.
-
-#### Priority Queues
-
-See the [Java JRE documentation](http://docs.oracle.com/javase/7/docs/api/index.html?overview-summary.html) of the `java.util.PriorityQueue<E>` class.
-
-You're done! Give your code a once over to make sure that it looks great, then push it to the GitHub master repo.
+When you turn your code in, write lots of comments. Please don't ask me about null pointer exception without trying to figure them out yourself by printing stuff out to the screen.
