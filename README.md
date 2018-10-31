@@ -71,7 +71,7 @@ You should think carefully about the overall design of the program because much 
 ## Step 1: Creating a frequency table
 Create a `HashMap` in `Huff.java` that will serve as your frequency table. It will map a character to information about that character. You should consider creating a class for storing information about a character (e.g., frequency, Huffman code, length of the Huffman code) that can serve as the values in this `HashMap`. 
 
-Read in the input file as shown in `Huff.java` and consider each character. If the character aready exists, add 1 to its current frequency total in that character's value in the `HashMap`. Otherwise, enter 1 in its value in the `HashMap`. Again, you might want to map from characters (or `int`s representing characters) to some class that stores information about the character.
+Read in the input file as shown in `Huff.java` and consider each character. If the character aready exists, add 1 to its current frequency total in that character's value in the `HashMap`. Otherwise, enter 1 in its value in the `HashMap`. Again, you might want to map from chars to some class that stores information about the character, rather than just to an integer.
 
 
 ## Step 2: Building the binary Huffman tree
