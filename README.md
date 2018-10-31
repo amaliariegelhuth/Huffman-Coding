@@ -71,28 +71,45 @@ You should think carefully about the overall design of the program because much 
 ## Step 1: Creating a frequency table
 Create a HashMap in Huff.java that will serve as your frequency table. It will map a character to information about that character, in particular the frequency. You should consider creating a class for storing information about a character (e.g., frequency, Huffman code) that can serve as the values in this HashMap. 
 
-Read in the input file as shown in Huff.java and consider each character. If the character aready exists, add 1 to its current total in the HashMap. Otherwise, enter 1 in its value in the HashMap. Again, you might be mapping from chars to some class that stores information about the char, but if it's easier, you can start just by mapping from char to frequency.
+Read in the input file as shown in Huff.java and consider each character. If the character aready exists, add 1 to its current frequency total in the HashMap. Otherwise, enter 1 in its value in the HashMap. Again, you might want to map from characters (or ints representing characters) to some class that stores information about the character.
 
 
 ## Step 2: Building the binary Huffman tree
-Next you are going to build a Huffman tree that you will be able to traverse to generate the Huffman code (i.e., the sequence of 1s and 0s) for each character, just as shown in class on October 22 and 24. This is one way to do this:
+Next you are going to build a Huffman tree that you will be able to traverse to generate the Huffman code (i.e., the sequence of 1s and 0s) for each character, just as shown in class on October 22 and 24. Here is one way to do this:
 
-1. Create  a HuffTree class that you can use to implement a binary tree-type data structure. Here are some elements it should contain: 
-* A Node inner class that contains pointers to right child node, left child node, and parent node, along with the character label itself and a weight. It will also be helpful to have a toString() method on Node just for sanity checking.
+1. Create  a HuffTree class that you can use to implement a binary tree data structure. Here are some elements it probably should contain: 
+* A Node inner class that contains pointers to right child node, left child node, and parent node, along with a variable to store the character and a variable to store the weight. It will also be helpful to have a toString() method on Node just for sanity checking.
 * A member variable that is a pointer to the top Node.
 * A member variable keeping track of the size. 
 * HuffTree should implement Comparable, which means that it will need a compareTo() method. The compareTo() method will compare the weights of two HuffTrees so that you can store HuffTrees in a java PriorityQueue. 
-* You should have a method that can traverse the tree down to its leaf nodes and see what sequences of left and right turns (i.e., 0s and 1s) were required to arrive at each leaf node. This will be the Huffman code of the character at that leaf node.
+* You should have a method that can traverse a HuffTree from its top node down to its leaf nodes in order to determine what sequences of left and right turns (i.e., 0s and 1s) were required to arrive at each leaf node. This will be the Huffman code of the character at that leaf node.
 
-2. For each character in your HashMap, create a HuffTree instance. The top will point at a Node that has null pointers to parent, right child, and left child, and has the character value set to the character and the weight value set to the frequency of that character.
+2. For each character in your HashMap, create a HuffTree instance. Initially, the top of each HuffTree will point at a Node that has null pointers for parent, right child, and left child, and has the character value set to the character and the weight value set to the frequency of that character.
 
-3. Put all of these HuffTrees in a Java PriorityQueue. (*You don't need to create your own priority queue! Use Java's implementation, which you can read about [here](https://docs.oracle.com/javase/8/docs/api/java/util/PriorityQueue.html)*). You can create a PriorityQueue by adding elements one by one or by giving it a whole ArrayList of elements.
+3. Put all of these HuffTrees in a Java PriorityQueue. (*You don't need to create your own priority queue! Use Java's implementation, which you can read about [here](https://docs.oracle.com/javase/8/docs/api/java/util/PriorityQueue.html)*). You can create a PriorityQueue by adding elements one by one with add() or by giving it a whole Collection (e.g., ArrayList) of elements as an argument to the constructor.
 
+4. You now have a PriorityQueue with one HuffTree for each character. While there is more than one HuffTree in the PriorityQueue, poll() off the two HuffTrees with the smallest weights, **t1** and **t2**. Construct a new HuffTree **t** with **t1** and **t2** as left and right children (respectively) and with weight = t1.weight() + t2.weight(). Insert the new HuffTree **t** into the priority queue.
 
+5. After merging all these HuffTrees, the PriorityQueue now contains exactly one element: the Huffman coding tree for the input text. Remove the tree from the priority queue. Recursively walk the coding tree recording the bit path P (i.e., the seq  uence of 0s and 1s). When the recursive walk arrives at a leaf with symbol A, update A's Huffman code (i.e., sequence of 1s and 0s) in the HashMap frequency table, in order to record the binary path that led from the root to leaf A.
 
-
+6. The symbol table now has the information required to write the variable length codes to the binary output file.
 
 ## Step 3: Writing to a binary file
+You will use the S&W BinaryOut class, an instance of which is created by the FileIOC class in Huff.java, to print out to the compressed binary file. 
+
+1. Open the binary output file. (Code for this is included in Huff.java.)
+
+2. Write out the signature two byte code (0x0bc0), which identifies the file as our special zip file. (This and all of the following steps that involve writing out to the binary file will use the overloaded write() method  in the BinaryOut class, as shown in the Huff.java code I have provided.)
+
+3. Write out, as an integer (32 bits, i.e., 4 bytes) the number of symbols in the frequency table HashMap.
+
+4. Next write out the symbol frequency information. For each key in the symbol table, write the key (i.e., the character) using one byte (i.e., as a char) and write its integer frequency using 4 bytes (i.e., as an int).
+
+5. Reopen the input file.
+
+6. For each occurrence of a character in the input file, look up its bit pattern in the symbol table and write it to the output file.
+
+7.
 
 
 #### Working with Binary Files
@@ -109,32 +126,6 @@ If you're using Windows (or if emacs isn't on your system or doesn't excite you)
 
 You'll find a `FileIO` ADT in the `src` directory. There are four routines there to support the IO required of both your programs. 
 
-```java
-public interface FileIO {
-
-  // opeInputFile opens myFile.txt for reading. See the JRE documentation
-  // for FileReader.  This function might be called from Huff.java.
-  //
-  FileReader openInputFile(String fname);
-
-  // openOutputFile opens a file for output text. This function might be
-  // called from Puff.java to create the uncompressed version of the file.
-  //
-  FileWriter openOutputFile();
-
-  // openBinaryOutputFile is synched up with openInputFile. If openInputFile
-  // opened myFile.txt, openOutputFile will create a new binary output file
-  // myFile.zip.  See the documentation of BinaryOut in SW.  This function
-  // would be called from Huff.java.
-  //
-  BinaryOut openBinaryOutputFile();
-
-  // openBinaryInputFile can open the zip file to uncompress it. This would
-  // be called from Puff.java.
-  //
-  BinaryIn openBinaryInputFile(String fname);
-}
-```
 
 #### Working with Bits and Variable Length Patterns of Bits
 
@@ -175,38 +166,5 @@ As we have discussed, the Huffman coding tree can be constructed from the inform
 #### Priority Queues
 
 See the [Java JRE documentation](http://docs.oracle.com/javase/7/docs/api/index.html?overview-summary.html) of the `java.util.PriorityQueue<E>` class.
-
-#### Protocols
-
-In order to ensure that we are all working on the same problem, your program is required to conform to the following protocols:
-
-1. When a Huffman tree with weight *w* is inserted into the priority queue, if there are already trees in the queue with the same weight, the one being inserted should be put BEHIND all others of the same weight;
-
-2. When bit patterns are being assigned to characters, the bit strings are built-up by adding bits to the RIGHT (rather than the left) and a leftward branch in the tree is assigned a 0 bit and a rightward branch is assigned a 1 bit;
-
-3. The compressed file that your Huff program creates should have the following structure.
-
-+ The first 2 bytes should contain the hexadecimal value 0x0BC0. This code identifies your zip file as one that has been compressed by our algorithm.
-+ The next 4 bytes contain the integer size of the frequency table. For the purposes of this discussion, call the integer N.
-+ The next N x 5 bytes contains the frequency table. Each entry in the table is a pair of values: a one byte character code followed by a 4 byte integer giving its frequency in the input file.
-+ The next information in the file is the bit string encoding the input file.
-
----
-
-## Huff : the Huffman Coding Algorithm
-
-1. Create a new (empty) symbol table.
-2. Open the input text file. For each unique character (or symbol) in the input file, create an entry in the symbol table for that symbol. Use the symbol table entry to count the frequency of the character in the input file.  Close the input file when done.
-3.  Create a new priority queue for Huffman trees. Recall that the compareTo function for Huffman trees compares trees by their weights. For each key (i.e., symbol) K in the symbol table, look up it's frequency f and create a Huffman tree leaf node with weight f. Insert the leaf node into the priority queue.
-4. While the priority queue has more than one element, remove two trees **t1** and **t2** from the priority queue. Construct a new tree **t** with **t1** and **t2** as left and right children (resp.) and with weight = t1.weight() + t2.weight(). Insert the new tree **t** into the priority queue.
-5. The priority queue now contains exactly one element: the Huffman coding tree for the input text. Remove the tree from the priority queue. Recursively walk the coding tree recording the binary bit path P at each step. When the recursive walk arrives at a leaf with symbol A, update A's binary bit pattern entry in the symbol table to record the binary path that led from the root to leaf A.
-6. The symbol table now has the information required to write the variable length codes to the binary output file.
-7. Open the binary output file.
-8. Write the signature bits to identify the file as a zip file.
-9. Write out the 32-bit length of the symbol table.
-10. Next write out the symbol frequency information. For each key in the symbol table, write the key (i.e., the character) using one byte and write its integer frequency using 4 bytes.
-11. Reopen the input file.
-12. For each occurrence of a character in the input file, look up it's binary bit pattern in the symbol table and write it to the output file.
-13. Close the output file.
 
 You're done! Give your code a once over to make sure that it looks great, then push it to the GitHub master repo.
