@@ -12,9 +12,9 @@ This is a pair problem set. Find one partner to work with. If you do not have a 
 
 ### Goals
 
-In this problem set, you will team up with one other classmate to design and develop a program called **Huff.java** which will perform Huffman compression of a text file. In the next problem set (PS8), you will work together to develop a program called **Puff.java** which will perform the corresponding decompression.
+In this problem set, you will team up with one other classmate to design and develop a program called `**Huff.java**` which will perform Huffman compression of a text file. In the next problem set (PS8), you will work together to develop a program called `**Puff.java**` which will perform the corresponding decompression.
 
-Algorithms of this kind are sometimes called *codecs*. Huffman coding is a *lossless compression* algorithm that achieves a very respectable rate of compression. In this problem set you are to design and develop the Huff program. After completing this problem set and the next, your team's pair of programs should have the property that for every text file `f.txt`
+Algorithms of this kind are sometimes called *codecs*. Huffman coding is a *lossless compression* algorithm that achieves a  respectable rate of compression. In this problem set you will design and develop the Huff program. After completing this problem set and the next, your team's pair of programs should have the property that for every text file `f.txt`
 
 ```
 > cp f.txt original.txt      # makes a copy of f.txt and call it original.txt
@@ -32,7 +32,7 @@ Huff.jar        README.md       samples/
 Puff.jar        img/            src/
 ```
 
-The `src` directory contains `FileIO.java`, an interface (ADT) for reading input and writing output, and an implementation of that interface called `FileIOC.java`. You can use this class for reading in the file you want to compress and for writing out the compressed file. (You will also use this class to read in a compressed file and write it out to uncompressed format in the next problem set.) More information on the FileIOC.java class is below.
+The `src` directory contains `FileIO.java`, an interface (ADT) for reading input and writing output, and an implementation of that interface called `FileIOC.java`. You can use this class for reading in the file you want to compress and for writing out the compressed file. (You will also use this class to read in a compressed file and write it out to uncompressed format in the next problem set.) I demonstrate how to use this class in the `Huff.java` file provided.
 
 In addition, the `src` directory contains well commented starter code for `Huff.java`. You might not use all this code, but it will help you read in a file character by character and write out to a binary file. 
 
@@ -40,7 +40,7 @@ The `samples` directory contains a few test files that you can use to test your 
 
 The file `Huff.jar` is a Java archive containing a reference implementation of the *compression* half of the codec. The file `Puff.jar` is a Java archive containing a reference implementation of the *decompression* half of the codec. These `.jar` files contain only compiled Java classes. You will not be able to view the actual code without sneaky efforts.
 
-You can use these jar files to test whether your code is doing what it should be doing. If you can compress a file with *your* `Huff.java` implementation, and decompress it with the included `Puff.jar` file, then your code works. You can also inspect the output of `Huff.jar` and compare it to the output of your code for `Huff.java`.
+You can use these .jar files to test whether your code is doing what it should be doing. If you can compress a file with *your* `Huff.java` implementation, and decompress it with the included `Puff.jar` file, then your code works. You can also inspect the output of `Huff.jar` and compare it to the output of your code for `Huff.java`.
 
 Without writing any code, you can try out either half of the codec from a command line as follows.
 
@@ -61,7 +61,7 @@ There three tasks involved in this problem set:
 
 2. Building a binary tree that you will then traverse to determine the bit sequence representing each character in your text (i.e., the Huffman coding for your input text), as demonstrated in class.
 
-3. Writing this information, along with an encoded version of the original text, to a binary file, which will be your compressed file. 
+3. Writing this information, along with a Huffman encoded version of the original text, to a binary file, which will be your compressed file. 
 
 I provide some code to get you started, but this will probably be a difficult problem set. You should start working on it right away. 
 
@@ -69,47 +69,53 @@ You should think carefully about the overall design of the program because much 
 
 
 ## Step 1: Creating a frequency table
-Create a HashMap in Huff.java that will serve as your frequency table. It will map a character to information about that character, in particular the frequency. You should consider creating a class for storing information about a character (e.g., frequency, Huffman code) that can serve as the values in this HashMap. 
+Create a `HashMap` in `Huff.java` that will serve as your frequency table. It will map a character to information about that character. You should consider creating a class for storing information about a character (e.g., frequency, Huffman code, length of the Huffman code) that can serve as the values in this `HashMap`. 
 
-Read in the input file as shown in Huff.java and consider each character. If the character aready exists, add 1 to its current frequency total in the HashMap. Otherwise, enter 1 in its value in the HashMap. Again, you might want to map from characters (or ints representing characters) to some class that stores information about the character.
+Read in the input file as shown in `Huff.java` and consider each character. If the character aready exists, add 1 to its current frequency total in that character's value in the `HashMap`. Otherwise, enter 1 in its value in the `HashMap`. Again, you might want to map from characters (or `int`s representing characters) to some class that stores information about the character.
 
 
 ## Step 2: Building the binary Huffman tree
 Next you are going to build a Huffman tree that you will be able to traverse to generate the Huffman code (i.e., the sequence of 1s and 0s) for each character, just as shown in class on October 22 and 24. Here is one way to do this:
 
-1. Create  a HuffTree class that you can use to implement a binary tree data structure. Here are some elements it probably should contain: 
-* A Node inner class that contains pointers to right child node, left child node, and parent node, along with a variable to store the character and a variable to store the weight. It will also be helpful to have a toString() method on Node just for sanity checking.
-* A member variable that is a pointer to the top Node.
+1. Create  a `HuffTree` class that you can use to implement a binary tree data structure. Here are some elements it probably should contain: 
+* A `Node` inner class that contains pointers to right child node, left child node, and parent node, along with a variable to store the character and a variable to store the weight. It will also be helpful to have a `toString()` method on `Node` just for sanity checking.
+* A member variable that is a pointer to the top `Node`.
 * A member variable keeping track of the size. 
-* HuffTree should implement Comparable, which means that it will need a compareTo() method. The compareTo() method will compare the weights of two HuffTrees so that you can store HuffTrees in a java PriorityQueue. 
-* You should have a method that can traverse a HuffTree from its top node down to its leaf nodes in order to determine what sequences of left and right turns (i.e., 0s and 1s) were required to arrive at each leaf node. This will be the Huffman code of the character at that leaf node.
+* `HuffTree` should implement `Comparable`, which means that it will need a `compareTo()` method. The `compareTo()` method will compare the weights of two `HuffTree`s so that you can store `HuffTree`s in a Java `PriorityQueue` object. 
+* You should have a method that can traverse a `HuffTree` from its top node down to its leaf nodes in order to determine what sequences of left and right turns (i.e., 0s and 1s) were required to arrive at each leaf node. This will be the Huffman code of the character at that leaf node.
 
-2. For each character in your HashMap, create a HuffTree instance. Initially, the top of each HuffTree will point at a Node that has null pointers for parent, right child, and left child, and has the character value set to the character and the weight value set to the frequency of that character.
+2. For each character in your `HashMap`, create a `HuffTree` instance. Initially, the `top` of each `HuffTree` will point at a `Node` that has null pointers for its parent, right child, and left child, and has the character variable set to the character and the weight variable set to the frequency of that character.
 
-3. Put all of these HuffTrees in a Java PriorityQueue. (*You don't need to create your own priority queue! Use Java's implementation, which you can read about [here](https://docs.oracle.com/javase/8/docs/api/java/util/PriorityQueue.html)*). You can create a PriorityQueue by adding elements one by one with add() or by giving it a whole Collection (e.g., ArrayList) of elements as an argument to the constructor.
+3. Put all of these `HuffTree`s in a Java `PriorityQueue`. (*You don't need to create your own priority queue! Use Java's implementation, which you can read about [here](https://docs.oracle.com/javase/8/docs/api/java/util/PriorityQueue.html)*). You can create a `PriorityQueue` by adding elements one by one with add() or by giving it a whole Collection (e.g., ArrayList) of elements as an argument to the constructor.
 
-4. You now have a PriorityQueue with one HuffTree for each character. While there is more than one HuffTree in the PriorityQueue, poll() off the two HuffTrees with the smallest weights, **t1** and **t2**. Construct a new HuffTree **t** with **t1** and **t2** as left and right children (respectively) and with weight = t1.weight() + t2.weight(). Insert the new HuffTree **t** into the priority queue.
+4. You now have a `PriorityQueue` with one `HuffTree` for each character. While there is more than one `HuffTree` in the `PriorityQueue`, `poll()` off the two `HuffTree`s with the smallest weights, **t1** and **t2**. Construct a new `HuffTree` **t** with **t1** and **t2** as left and right children (respectively) and with weight = t1.weight() + t2.weight(). Insert the new `HuffTree` **t** into the priority queue.
 
-5. After merging all these HuffTrees, the PriorityQueue now contains exactly one element: the Huffman coding tree for the input text. Remove the tree from the priority queue. Recursively walk the coding tree recording the bit path P (i.e., the seq  uence of 0s and 1s). When the recursive walk arrives at a leaf with symbol A, update A's Huffman code (i.e., sequence of 1s and 0s) in the HashMap frequency table, in order to record the binary path that led from the root to leaf A.
+5. After merging all these `HuffTree`s, the `PriorityQueue` now contains exactly one element: the Huffman coding tree for the input text. Remove the remaning `HuffTree` from the priority queue. Recursively walk the coding tree recording the bit path P (i.e., the Huffman code, the sequence of 0s and 1s). 
 
-6. The symbol table now has the information required to write the variable length codes to the binary output file.
+* When the recursive walk arrives at a leaf with symbol A, you will know the Huffman code (i.e., the path P, the sequence of 0s and 1s) for character A. 
+
+* In the `HashMap` storing the frequency table, you (hopefully) have keys that are characters and values that are instances of some class that stores information about a character. This class should have a variable where you can store its Huffman code, i.e., the binary path P of 0s and 1s. Update character A's Huffman code in the `HashMap` frequency table to record the binary path P that led from the top to leaf A.
+
+6. The `HashMap` storing the frequency table now has the information required to write the variable length codes to the binary output file.
 
 ## Step 3: Writing to a binary file
-You will use the S&W BinaryOut class, an instance of which is created by the FileIOC class in Huff.java, to print out to the compressed binary file. 
+You will use the S&W `BinaryOut` class, an instance of which is created by the `FileIOC` class in `Huff.java`, to print out to the compressed binary file. 
 
-1. Open the binary output file. (Code for this is included in Huff.java.)
+1. Open the binary output file. (Code for this is included in `Huff.java`.)
 
-2. Write out the signature two byte code (0x0bc0), which identifies the file as our special zip file. (This and all of the following steps that involve writing out to the binary file will use the overloaded write() method  in the BinaryOut class, as shown in the Huff.java code I have provided.)
+2. Write out the signature two-byte code (0x0bc0), which identifies the file as our special zip file. (This and all of the following steps that involve writing out to the binary file will use the overloaded `write()` method  in the `BinaryOut` class, as shown in the `Huff.java` code I have provided.)
 
-3. Write out, as an integer (32 bits, i.e., 4 bytes) the number of symbols in the frequency table HashMap.
+3. Write out, as an integer (32 bits, i.e., 4 bytes), the number of symbols in the frequency table HashMap.
 
 4. Next write out the symbol frequency information. For each key in the symbol table, write the key (i.e., the character) using one byte (i.e., as a char) and write its integer frequency using 4 bytes (i.e., as an int).
 
 5. Reopen the input file.
 
-6. For each occurrence of a character in the input file, look up its bit pattern in the symbol table and write it to the output file.
+6. For each occurrence of a character in the input file, look up its bit pattern in the frequency table and write it out to the binary file. You have two options for doing this using the `write()` method in `BinaryOut`.
 
-7.
+* You can proceed through the string of 0s and 1s, print out each as a boolean: false for 0 and true for 1.
+
+* You can convert the string of 0s and 1s to an int using `Integer.parseInt`, with the first argument being the string of 0s and 1s and the second argument being the radix, 2. This will create an int that corresponds to the value expressed by string of 0s and 1s in binary. You can then call the `write()` method of `BinaryOut`
 
 
 #### Working with Binary Files
