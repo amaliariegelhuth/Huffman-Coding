@@ -29,7 +29,7 @@ In addition to a hidden `.gitignore` file, this folder contains:
 
 ```
 Huff.jar        README.md       samples/
-Puff.jar        img/            src/
+Puff.jar        src/
 ```
 
 The `src` directory contains `FileIO.java`, an interface (ADT) for reading input and writing output, and an implementation of that interface called `FileIOC.java`. You can use this class for reading in the file you want to compress and for writing out the compressed file. (You will also use this class to read in a compressed file and write it out to uncompressed format in the next problem set.) I demonstrate how to use this class in the `Huff.java` file provided.
