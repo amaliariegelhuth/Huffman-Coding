@@ -22,19 +22,24 @@ public class Huff {
     // Of course, you will want to read a file provided as a command-line argument.
     FileIOC fioc = new FileIOC();
     FileReader fr = fioc.openInputFile("../samples/lincoln.txt");
-
+    HashMap<String, Integer> frequencyMap = new HashMap<>();
     // This lets you go through the file character by character so you can count them.
     int c;
     while ((c = fr.read()) != -1) {
 
       // Example of something to do: print out each character.
-      System.out.println((char) c);      
-
+      System.out.println((char) c);
+      if (frequencyMap.containsKey(Character.toString((char) c))){
+        Integer val = frequencyMap.get(Character.toString((char) c));
+        frequencyMap.put(Character.toString((char) c), val + 1 );
+      }else{
+        frequencyMap.put(Character.toString((char) c), 1);
+      }
       // This would be a good place for STEP 1, putting the code that keeps track of
       // the frequency of each character, storing it in your HashMap member variable.
 
     }
-
+System.out.println(frequencyMap.toString());
     // You have to close the file, just the way you would in Python.
     fr.close();
 
