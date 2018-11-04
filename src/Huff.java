@@ -32,13 +32,13 @@ public class Huff {
       Node parent;
       String character;
       int freq;
-      public void Node(Node rightChild, Node leftChild, Node parent, String character, int freq){
-        this.rightChild = rightChild;
-        this.leftChild = leftChild;
-        this.parent = parent;
-        this.character = character;
-        this.freq = freq;
-      }
+      // public void Node(Node rightChild, Node leftChild, Node parent, String character, int freq){
+      //   this.rightChild = rightChild;
+      //   this.leftChild = leftChild;
+      //   this.parent = parent;
+      //   this.character = character;
+      //   this.freq = freq;
+      // }
       public String toString(){
         String out = "";
         out = out + ("Right child: " + rightChild + "/n");
@@ -86,7 +86,9 @@ public class Huff {
 // System.out.println(frequencyMap.toString());
 for (Map.Entry<String, Integer> entry : frequencyMap.entrySet()){
   System.out.println(entry.getKey());
-  Node n = new Node(null, null, null, entry.getKey(), entry.getValue());
+  Node n;
+  n.character = entry.getKey();
+  n.freq = entry.getValue();
   HuffTree ht = new HuffTree(n, n.freq);
 }
     // You have to close the file, just the way you would in Python.
