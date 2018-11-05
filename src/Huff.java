@@ -17,6 +17,11 @@ public class Huff {
 
       this.weight = weight;
     }
+    HuffTree(Node leftChild, Node rightChild, int weight) {
+      this.leftChild = leftChild;
+      this.rightChild = rightChild;
+      this.weight = weight;
+    }
     public int compareTo(HuffTree tree){
       if (weight > tree.weight){
         return 1;
@@ -147,11 +152,11 @@ public class Huff {
       HuffTree t1 = pq.poll();
       HuffTree t2 = pq.poll();
       // I don't know what the top Node would be??
-      HuffTree t = new HuffTree(Node n, t1.weight() + t2.weight());
+      HuffTree t = new HuffTree(t1, t2, t1.weight() + t2.weight());
       pq.add(t);
     }
 
-    HuffTree t = pq.poll()
+    HuffTree t = pq.poll();
     t.print(t.top);
 
 
