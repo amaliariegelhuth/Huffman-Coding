@@ -8,13 +8,13 @@ import java.util.*;
 
 
 public class Huff {
-
+  HuffTree ht = new HuffTree(0);
   static boolean DEBUG=true;
 
   PriorityQueue pq = new PriorityQueue();
   class HuffTree implements Comparable<HuffTree>{
-    public void HuffTree(Node top, int weight){
-      this.top = top;
+    HuffTree(int weight){
+
       this.weight = weight;
     }
     public int compareTo(HuffTree tree){
@@ -55,6 +55,18 @@ public class Huff {
 
 
   }
+  public void createTree(HashMap<String, Integer> map){
+    for (Map.Entry<String, Integer> entry : map.entrySet()){
+      System.out.println(entry.getKey());
+      // Node n;
+      // n.character = entry.getKey();
+      // n.freq = entry.getValue();
+      // HuffTree ht;
+      // ht = new HuffTree();
+      ht.top.character = entry.getKey();
+      ht.top.freq = entry.getValue();
+    }
+  }
 
   // MAIN METHOD
   // It has to throw IOException since you are using classes that throw IOExceptions.
@@ -84,13 +96,16 @@ public class Huff {
 
     }
 // System.out.println(frequencyMap.toString());
-for (Map.Entry<String, Integer> entry : frequencyMap.entrySet()){
-  System.out.println(entry.getKey());
-  Node n;
-  n.character = entry.getKey();
-  n.freq = entry.getValue();
-  HuffTree ht = new HuffTree(n, n.freq);
-}
+// for (Map.Entry<String, Integer> entry : frequencyMap.entrySet()){
+//   System.out.println(entry.getKey());
+//   // Node n;
+//   // n.character = entry.getKey();
+//   // n.freq = entry.getValue();
+//   // HuffTree ht;
+//   // ht = new HuffTree();
+//   ht.top.character = entry.getKey();
+//   ht.top.freq = entry.getValue();
+// }
     // You have to close the file, just the way you would in Python.
     fr.close();
 
