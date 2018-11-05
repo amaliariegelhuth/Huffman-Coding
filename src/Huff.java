@@ -14,13 +14,14 @@ public class Huff {
   PriorityQueue pq = new PriorityQueue();
   class HuffTree implements Comparable<HuffTree>{
     HuffTree(int weight){
-
       this.weight = weight;
+      this.top = top;
     }
-    HuffTree(Node parent, Node rightChild, Node leftChild){
+    HuffTree(Node parent, Node rightChild, Node leftChild, int weight){
       this.parent = parent;
       this.rightChild = rightChild;
       this.leftChild = leftChild;
+      this.weight = weight;
     }
     public int compareTo(HuffTree tree){
       if (weight > tree.weight){
@@ -31,7 +32,7 @@ public class Huff {
         return 0;
       }
     }
-<<<<<<< HEAD
+
     // got this method from the hints, not completely sure how it relates to PS
     public String traverse(Node n, String s) {
       if (n == null) {
@@ -47,10 +48,8 @@ public class Huff {
         print(n.rightChild, s + "1");
       }
     }
-    
 
-=======
->>>>>>> 54f85d59a3bb33c33d8be93dc1fb007d7ce73162
+
     class Node{
       Node rightChild;
       Node leftChild;
@@ -87,7 +86,7 @@ public class Huff {
       // n.character = entry.getKey();
       // n.freq = entry.getValue();
       // HuffTree ht;
-      // ht = new HuffTree();
+      ht = new HuffTree(entry.getValue());
       ht.top.character = entry.getKey();
       ht.top.freq = entry.getValue();
     }
