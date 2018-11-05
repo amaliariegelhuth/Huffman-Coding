@@ -36,10 +36,10 @@ public class Huff {
         return 0;
       }
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> 0aaeeb50532989f82952ed4d7fa67d18ca092e4e
+// <<<<<<< HEAD
+// =======
+//
+// >>>>>>> 0aaeeb50532989f82952ed4d7fa67d18ca092e4e
     // got this method from the hints, not completely sure how it relates to PS
     public String traverse(Node n, String s) {
       if (n == null) {
@@ -153,25 +153,25 @@ public class Huff {
       // the frequency of each character, storing it in your HashMap member variable.
 
     }
-    PriorityQueue <HuffTree> pq = new PriorityQueue <HuffTree>();
-    for (Map.Entry<String, Integer> entry : frequencyMap.entrySet()){
-      System.out.println(entry.getKey());
-      Node n = new Node();
-      n.character = entry.getKey();
-      n.freq = entry.getValue();
-      HuffTree ht = new HuffTree(n, n.freq);
-      pq.add(ht);
-    }
+    // PriorityQueue <HuffTree> pq = new PriorityQueue <HuffTree>();
+    // for (Map.Entry<String, Integer> entry : frequencyMap.entrySet()){
+    //   System.out.println(entry.getKey());
+    //   Node n = new Node();
+    //   n.character = entry.getKey();
+    //   n.freq = entry.getValue();
+    //   HuffTree ht = new HuffTree(n, n.freq);
+    //   pq.add(ht);
+    // }
+    //
+    // while (pq.size() > 1) {
+    //   HuffTree t1 = pq.poll();
+    //   HuffTree t2 = pq.poll();
+    //   // I don't know what the top Node would be??
+    //   HuffTree t = new HuffTree(Node n, t1.weight() + t2.weight());
+    //   pq.add(t);
+    // }
 
-    while (pq.size() > 1) {
-      HuffTree t1 = pq.poll();
-      HuffTree t2 = pq.poll();
-      // I don't know what the top Node would be??
-      HuffTree t = new HuffTree(Node n, t1.weight() + t2.weight());
-      pq.add(t);
-    }
-
-    HuffTree t = pq.poll()
+    HuffTree t = pq.poll();
     t.print(t.top);
 
 
