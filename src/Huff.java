@@ -8,13 +8,13 @@ import java.util.*;
 
 
 public class Huff {
-
+  HuffTree ht = new HuffTree(0);
   static boolean DEBUG=true;
 
   PriorityQueue pq = new PriorityQueue();
-  public class HuffTree implements Comparable<HuffTree>{
-    public void HuffTree(Node top, int weight){
-      this.top = top;
+  class HuffTree implements Comparable<HuffTree>{
+    HuffTree(int weight){
+
       this.weight = weight;
     }
     public int compareTo(HuffTree tree){
@@ -71,26 +71,18 @@ public class Huff {
 
 
   }
-  // use this insetad of integer in hashmap?
-  public class Info {
-    int freq;
-    String huffCode;
-    public Info(int f, String hc){
-      freq = f;
-      huffCode = hc;
+  public void createTree(HashMap<String, Integer> map){
+    for (Map.Entry<String, Integer> entry : map.entrySet()){
+      System.out.println(entry.getKey());
+      // Node n;
+      // n.character = entry.getKey();
+      // n.freq = entry.getValue();
+      // HuffTree ht;
+      // ht = new HuffTree();
+      ht.top.character = entry.getKey();
+      ht.top.freq = entry.getValue();
     }
-    public int getFreq() {
-      return freq;
-    }
-    public void setFreq(int n) {
-      freq = n;
-    }
-    public String getHuffCode() {
-      return huffCode;
-    }
-    public void setHuffCode(String s) {
-      huffCode = s;
-    }
+  }
 
    }
   // MAIN METHOD
