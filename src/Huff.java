@@ -12,7 +12,7 @@ public class Huff {
   static boolean DEBUG=true;
 
   PriorityQueue pq = new PriorityQueue();
-  class HuffTree implements Comparable<HuffTree>{
+  public class HuffTree implements Comparable<HuffTree>{
     public void HuffTree(Node top, int weight){
       this.top = top;
       this.weight = weight;
@@ -26,6 +26,22 @@ public class Huff {
         return 0;
       }
     }
+    // got this method from the hints, not completely sure how it relates to PS
+    public String traverse(Node n, String s) {
+      if (n == null) {
+        return s;
+      }
+      if (n.rightChild == null && n.leftChild ==null) {
+        System.out.println(n.character + s);
+      }
+      if (n.leftChild != null) {
+        print(n.leftChild, s + "0");
+      }
+      if (n.rightChild != null) {
+        print(n.rightChild, s + "1");
+      }
+    }
+
     class Node{
       Node rightChild;
       Node leftChild;
@@ -55,7 +71,28 @@ public class Huff {
 
 
   }
+  // use this insetad of integer in hashmap?
+  public class Info {
+    int freq;
+    String huffCode;
+    public Info(int f, String hc){
+      freq = f;
+      huffCode = hc;
+    }
+    public int getFreq() {
+      return freq;
+    }
+    public void setFreq(int n) {
+      freq = n;
+    }
+    public String getHuffCode() {
+      return huffCode;
+    }
+    public void setHuffCode(String s) {
+      huffCode = s;
+    }
 
+   }
   // MAIN METHOD
   // It has to throw IOException since you are using classes that throw IOExceptions.
   public static void main (String[] args) throws IOException {
@@ -73,24 +110,40 @@ public class Huff {
 
       // Example of something to do: print out each character.
       System.out.println((char) c);
-      if (frequencyMap.containsKey(Character.toString((char) c))){
+      if (frequencyMap.containsKey(Character.toString((char) c))) {
         Integer val = frequencyMap.get(Character.toString((char) c));
         frequencyMap.put(Character.toString((char) c), val + 1 );
-      }else{
+      } else {
         frequencyMap.put(Character.toString((char) c), 1);
       }
       // This would be a good place for STEP 1, putting the code that keeps track of
       // the frequency of each character, storing it in your HashMap member variable.
 
     }
+
+    PriorityQueue <HuffTree> pq = new PriorityQueue <HuffTree>();
 // System.out.println(frequencyMap.toString());
-for (Map.Entry<String, Integer> entry : frequencyMap.entrySet()){
-  System.out.println(entry.getKey());
-  Node n;
-  n.character = entry.getKey();
-  n.freq = entry.getValue();
-  HuffTree ht = new HuffTree(n, n.freq);
-}
+    for (Map.Entry<String, Integer> entry : frequencyMap.entrySet()){
+      System.out.println(entry.getKey());
+      Node n = new Node();
+      n.character = entry.getKey();
+      n.freq = entry.getValue();
+      HuffTree ht = new HuffTree(n, n.freq);
+      pq.add(ht);
+    }
+
+    while (pq.size() > 1) {
+      HuffTree t1 = pq.poll();
+      HuffTree t2 = pq.poll();
+      // I don't know what the top Node would be??
+      HuffTree t = new HuffTree(Node n, t1.weight() + t2.weight());
+      pq.add(t);
+    }
+
+    HuffTree t = pq.poll()
+    t.print(t.top);
+
+
     // You have to close the file, just the way you would in Python.
     fr.close();
 
