@@ -46,6 +46,7 @@ public class Huff {
         print(n.rightChild, s + "1");
       }
     }
+    
 
     class Node{
       Node rightChild;
