@@ -17,7 +17,7 @@ public class Huff {
 
       this.weight = weight;
     }
-    HuffTree(Node parent, Node rightChild, Node leftChild){
+    HuffTree (Node parent, Node rightChild, Node leftChild){
       this.parent = parent;
       this.rightChild = rightChild;
       this.leftChild = leftChild;
@@ -31,7 +31,6 @@ public class Huff {
         return 0;
       }
     }
-<<<<<<< HEAD
     // got this method from the hints, not completely sure how it relates to PS
     public String traverse(Node n, String s) {
       if (n == null) {
@@ -47,10 +46,8 @@ public class Huff {
         print(n.rightChild, s + "1");
       }
     }
-    
 
-=======
->>>>>>> 54f85d59a3bb33c33d8be93dc1fb007d7ce73162
+
     class Node{
       Node rightChild;
       Node leftChild;
@@ -80,6 +77,25 @@ public class Huff {
 
 
   }
+  public class Info {
+    int freq;
+    String huffCode;
+    public Info(int f, String hc){
+      freq = f;
+      huffCode = hc;
+    }
+    public int getFreq() {
+      return freq;
+     }
+     public void setFreq(int n) {
+       freq = n;
+     }
+     public String getHuffCode() {
+       return huffCode;
+     }
+     public void setHuffCode(String s) {
+       huffCode = s;
+     }
   public void createTree(HashMap<String, Integer> map){
     for (Map.Entry<String, Integer> entry : map.entrySet()){
       System.out.println(entry.getKey());
@@ -120,6 +136,29 @@ public class Huff {
       // the frequency of each character, storing it in your HashMap member variable.
 
     }
+    PriorityQueue <HuffTree> pq = new PriorityQueue <HuffTree>();
+    for (Map.Entry<String, Integer> entry : frequencyMap.entrySet()){
+      System.out.println(entry.getKey());
+      Node n = new Node();
+      n.character = entry.getKey();
+      n.freq = entry.getValue();
+      HuffTree ht = new HuffTree(n, n.freq);
+      pq.add(ht);
+    }
+
+    while (pq.size() > 1) {
+      HuffTree t1 = pq.poll();
+      HuffTree t2 = pq.poll();
+      // I don't know what the top Node would be??
+      HuffTree t = new HuffTree(Node n, t1.weight() + t2.weight());
+      pq.add(t);
+    }
+
+    HuffTree t = pq.poll()
+    t.print(t.top);
+
+
+
 // System.out.println(frequencyMap.toString());
 // for (Map.Entry<String, Integer> entry : frequencyMap.entrySet()){
 //   System.out.println(entry.getKey());
