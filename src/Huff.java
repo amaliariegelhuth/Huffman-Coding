@@ -17,17 +17,12 @@ public class Huff {
       this.weight = weight;
       this.top = top;
     }
-<<<<<<< HEAD
-    HuffTree(Node parent, Node rightChild, Node leftChild, int weight){
-      this.parent = parent;
-=======
 // <<<<<<< HEAD
     // HuffTree (Node parent, Node rightChild, Node leftChild){
 // =======
     HuffTree(Node rightChild, Node leftChild, int weight){
 // >>>>>>> 0aaeeb50532989f82952ed4d7fa67d18ca092e4e
       // this.parent = parent;
->>>>>>> 1ba101a7b17ba040d7a97b05a4a9beda77cac436
       this.rightChild = rightChild;
       this.leftChild = leftChild;
       this.weight = weight;
@@ -41,13 +36,6 @@ public class Huff {
         return 0;
       }
     }
-<<<<<<< HEAD
-=======
-// <<<<<<< HEAD
-// =======
-//
-// >>>>>>> 0aaeeb50532989f82952ed4d7fa67d18ca092e4e
->>>>>>> 1ba101a7b17ba040d7a97b05a4a9beda77cac436
     // got this method from the hints, not completely sure how it relates to PS
     public String traverse(Node n, String s) {
       if (n == null) {
@@ -125,10 +113,6 @@ public class Huff {
       ht = new HuffTree(entry.getValue());
       ht.top.character = entry.getKey();
       ht.top.freq = entry.getValue();
-<<<<<<< HEAD
-      HuffTree ht = new HuffTree(n, n.freq);
-      pq.add(ht);
-=======
       pq.add(ht);
     }
     while (pq.size() > 1){
@@ -136,7 +120,6 @@ public class Huff {
       HuffTree t2 = pq.poll();
       HuffTree newHT = new HuffTree(t1,t2,t1.weight + t2.weight);
       pq.add(newHT);
->>>>>>> 1ba101a7b17ba040d7a97b05a4a9beda77cac436
     }
   }
 
@@ -167,7 +150,6 @@ public class Huff {
       // the frequency of each character, storing it in your HashMap member variable.
 
     }
-<<<<<<< HEAD
     /*
     PriorityQueue <HuffTree> pq = new PriorityQueue <HuffTree>();
     for (Map.Entry<String, Integer> entry : frequencyMap.entrySet()){
@@ -191,28 +173,6 @@ public class Huff {
 
     }
 
-=======
-    // PriorityQueue <HuffTree> pq = new PriorityQueue <HuffTree>();
-    // for (Map.Entry<String, Integer> entry : frequencyMap.entrySet()){
-    //   System.out.println(entry.getKey());
-    //   Node n = new Node();
-    //   n.character = entry.getKey();
-    //   n.freq = entry.getValue();
-    //   HuffTree ht = new HuffTree(n, n.freq);
-    //   pq.add(ht);
-    // }
-    //
-    // while (pq.size() > 1) {
-    //   HuffTree t1 = pq.poll();
-    //   HuffTree t2 = pq.poll();
-    //   // I don't know what the top Node would be??
-    //   HuffTree t = new HuffTree(Node n, t1.weight() + t2.weight());
-    //   pq.add(t);
-    // }
-
-    HuffTree t = pq.poll();
-    t.print(t.top);
->>>>>>> 1ba101a7b17ba040d7a97b05a4a9beda77cac436
 
 
 
