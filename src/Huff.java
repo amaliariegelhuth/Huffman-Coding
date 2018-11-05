@@ -17,12 +17,12 @@ public class Huff {
       this.weight = weight;
       this.top = top;
     }
-<<<<<<< HEAD
-    HuffTree (Node parent, Node rightChild, Node leftChild){
-=======
-    HuffTree(Node parent, Node rightChild, Node leftChild, int weight){
->>>>>>> 0aaeeb50532989f82952ed4d7fa67d18ca092e4e
-      this.parent = parent;
+// <<<<<<< HEAD
+    // HuffTree (Node parent, Node rightChild, Node leftChild){
+// =======
+    HuffTree(Node rightChild, Node leftChild, int weight){
+// >>>>>>> 0aaeeb50532989f82952ed4d7fa67d18ca092e4e
+      // this.parent = parent;
       this.rightChild = rightChild;
       this.leftChild = leftChild;
       this.weight = weight;
@@ -105,6 +105,7 @@ public class Huff {
      public void setHuffCode(String s) {
        huffCode = s;
      }
+   }
   public void createTree(HashMap<String, Integer> map){
     for (Map.Entry<String, Integer> entry : map.entrySet()){
       System.out.println(entry.getKey());
@@ -115,6 +116,13 @@ public class Huff {
       ht = new HuffTree(entry.getValue());
       ht.top.character = entry.getKey();
       ht.top.freq = entry.getValue();
+      pq.add(ht);
+    }
+    while (pq.size() > 1){
+      HuffTree t1 = pq.poll();
+      HuffTree t2 = pq.poll();
+      HuffTree newHT = new HuffTree(t1,t2,t1.weight + t2.weight);
+      pq.add(newHT);
     }
   }
 
