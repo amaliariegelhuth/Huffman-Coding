@@ -83,6 +83,25 @@ public class Huff {
       ht.top.freq = entry.getValue();
     }
   }
+  public class Info {
+    int freq;
+    String huffCode;
+    public Info(int f, String hc){
+      freq = f;
+      huffCode = hc;
+    }
+    public int getFreq() {
+      return freq;
+    }
+    public void setFreq(int n) {
+      freq = n;
+    }
+    public String getHuffCode() {
+      return huffCode;
+    }
+    public void setHuffCode(String s) {
+      huffCode = s;
+    }
 
    }
   // MAIN METHOD
