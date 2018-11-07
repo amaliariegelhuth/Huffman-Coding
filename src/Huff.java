@@ -11,8 +11,8 @@ public class Huff {
   HuffTree ht = new HuffTree(0);
   static boolean DEBUG=true;
 
-  PriorityQueue pq = new PriorityQueue();
-  class HuffTree implements Comparable<HuffTree>{
+  static PriorityQueue <HuffTree> pq = new PriorityQueue <HuffTree>();
+  static class HuffTree implements Comparable<HuffTree>{
 
     Node top;
     int size = 1;
@@ -20,12 +20,11 @@ public class Huff {
 
     HuffTree(int weight){
       this.weight = weight;
-      this.top = top;
     }
     HuffTree(Node leftChild, Node rightChild, int weight){
       top = new Node();
-      top.this.leftChild = leftChild;
-      top.this.rightChild = rightChild;
+      top.leftChild = leftChild;
+      top.rightChild = rightChild;
       this.weight = weight;
     }
     public int compareTo(HuffTree tree){
@@ -35,25 +34,10 @@ public class Huff {
         return -1;
       }
     }
-    // got this method from the hints, not completely sure how it relates to PS
-    // public String traverse(Node n, String s) {
-    //   if (n == null) {
-    //     return s;
-    //   }
-    //   if (n.rightChild == null && n.leftChild ==null) {
-    //     System.out.println(n.character + s);
-    //   }
-    //   if (n.leftChild != null) {
-    //     traverse(n.leftChild, s + "0");
-    //   }
-    //   if (n.rightChild != null) {
-    //     traverse(n.rightChild, s + "1");
-    //   }
-    // }
 
     public String traverse (Node n, String s) {
       if (n == null) {
-        return;
+        return "";
       }
       if (n.rightChild == null && n.leftChild == null) {
         return s;
@@ -64,6 +48,7 @@ public class Huff {
       if (n.rightChild != null) {
         traverse(n.rightChild, s + "1");
       }
+      return "";
     }
 
     class Node{
@@ -85,7 +70,7 @@ public class Huff {
     }
   }
   // use this instead of integer
-  public class Info {
+  public static class Info {
     int freq;
     String huffCode;
     public Info(int f, String hc){
@@ -105,10 +90,10 @@ public class Huff {
        huffCode = s;
      }
    }
-  public void createTree(TreeMap<String, Info> map){
+  public static void createTree(TreeMap<String, Info> map){
     for (Map.Entry<String, Info> entry : map.entrySet()){
       System.out.println(entry.getKey());
-      ht = new HuffTree(entry.getValue().getFreq());
+      HuffTree ht = new HuffTree(entry.getValue().getFreq());
       ht.top.character = entry.getKey();
       ht.top.freq = entry.getValue().getFreq();
       pq.add(ht);
@@ -116,9 +101,9 @@ public class Huff {
     while (pq.size() > 1){
       HuffTree t1 = pq.poll();
       HuffTree t2 = pq.poll();
-      Node n1 = t1.top();
-      Node n2 = t2.top();
-      HuffTree newHT = new HuffTree(n1, n2, t1.weight + t2.weight);
+      // Node n1 = t1.top;
+      // Node n2 = t2.top;
+      HuffTree newHT = new HuffTree(t1.top, t2.top, t1.weight + t2.weight);
       pq.add(newHT);
     }
   }
@@ -142,7 +127,7 @@ public class Huff {
       System.out.println((char) c);
       if (frequencyMap.containsKey(Character.toString((char) c))){
         int val = frequencyMap.get(Character.toString((char) c)).getFreq();
-        frequencyMap.put(Character.toString((char) c), new Info(val + 1, "") );
+        frequencyMap.put(Character.toString((char) c), new Info(val + 1, ""));
       }else{
         frequencyMap.put(Character.toString((char) c), new Info(1, ""));
       }
@@ -155,18 +140,19 @@ public class Huff {
     HuffTree t = pq.poll();
     String codeList = t.traverse(t.top, "");
     for (int i = 0; i < codeList.length(); i++){
-      Node pholder = t.top;
+      HuffTree holder = t;
+      // Node pholder = t.top;
       String code = "";
-      while (pholder.character == null){
+      while (t.top.character == null){
         if (codeList.substring(i, i + 1).equals("0")){
-          pholder = pholder.leftChild;
+          t.top = t.top.leftChild;
           code = code + "0";
         } else {
-          pholder = pholder.rightChild;
+          t.top = t.top.rightChild;
           code = code + "1";
         }
       }
-      frequencyMap.put(pholder.character, new Info(pholder.freq, code));
+      frequencyMap.put(t.top.character, new Info(t.top.freq, code));
     }
 
 
