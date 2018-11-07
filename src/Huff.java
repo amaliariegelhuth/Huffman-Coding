@@ -20,6 +20,7 @@ public class Huff {
 
     HuffTree(int weight){
       this.weight = weight;
+      top = new Node();
     }
     HuffTree(Node leftChild, Node rightChild, int weight){
       top = new Node();
@@ -35,20 +36,25 @@ public class Huff {
       }
     }
 
-    public String traverse (Node n, String s) {
+    public void traverse (Node n, String s, TreeMap<String, Info> map) {
       if (n == null) {
-        return "";
+        return;
       }
       if (n.rightChild == null && n.leftChild == null) {
-        return s;
+
+
+
+
+        System.out.println("returning s : " + s);
+map.get(n.character).huffCode = s;
       }
       if (n.leftChild != null) {
-        traverse(n.leftChild, s + "0");
+        traverse(n.leftChild, s + "0", map);
       }
       if (n.rightChild != null) {
-        traverse(n.rightChild, s + "1");
+        traverse(n.rightChild, s + "1", map);
       }
-      return "";
+
     }
 
     class Node{
@@ -73,9 +79,14 @@ public class Huff {
   public static class Info {
     int freq;
     String huffCode;
-    public Info(int f, String hc){
+    public Info(int f){
       freq = f;
-      huffCode = hc;
+
+    }
+    public Info(int f, String h){
+      freq = f;
+      huffCode = h;
+
     }
     public int getFreq() {
       return freq;
@@ -92,7 +103,6 @@ public class Huff {
    }
   public static void createTree(TreeMap<String, Info> map){
     for (Map.Entry<String, Info> entry : map.entrySet()){
-      System.out.println(entry.getKey());
       HuffTree ht = new HuffTree(entry.getValue().getFreq());
       ht.top.character = entry.getKey();
       ht.top.freq = entry.getValue().getFreq();
@@ -103,6 +113,7 @@ public class Huff {
       HuffTree t2 = pq.poll();
       // Node n1 = t1.top;
       // Node n2 = t2.top;
+
       HuffTree newHT = new HuffTree(t1.top, t2.top, t1.weight + t2.weight);
       pq.add(newHT);
     }
@@ -112,49 +123,54 @@ public class Huff {
   // It has to throw IOException since you are using classes that throw IOExceptions.
   public static void main (String[] args) throws IOException {
 
-
     // USING FileIOC TO READ IN A FILE
     // Here is some code that shows you how use FileIOC to read in a (not binary) file:
     // Of course, you will want to read a file provided as a command-line argument.
     FileIOC fioc = new FileIOC();
-    FileReader fr = fioc.openInputFile("../samples/lincoln.txt");
+    FileReader fr = fioc.openInputFile("../samples/mississippi.txt");
     TreeMap<String, Info> frequencyMap = new TreeMap<>();
     // This lets you go through the file character by character so you can count them.
     int c;
     while ((c = fr.read()) != -1) {
-
       // Example of something to do: print out each character.
-      System.out.println((char) c);
       if (frequencyMap.containsKey(Character.toString((char) c))){
-        int val = frequencyMap.get(Character.toString((char) c)).getFreq();
-        frequencyMap.put(Character.toString((char) c), new Info(val + 1, ""));
+         Integer val = frequencyMap.get(Character.toString((char) c)).freq;
+        Info i = new Info(val + 1);
+        frequencyMap.put(Character.toString((char) c), i );
       }else{
-        frequencyMap.put(Character.toString((char) c), new Info(1, ""));
+        Info i = new Info(1);
+        frequencyMap.put(Character.toString((char) c), i);
       }
       // This would be a good place for STEP 1, putting the code that keeps track of
       // the frequency of each character, storing it in your HashMap member variable.
 
     }
-
     createTree(frequencyMap);
     HuffTree t = pq.poll();
-    String codeList = t.traverse(t.top, "");
-    for (int i = 0; i < codeList.length(); i++){
-      HuffTree holder = t;
-      // Node pholder = t.top;
-      String code = "";
-      while (t.top.character == null){
-        if (codeList.substring(i, i + 1).equals("0")){
-          t.top = t.top.leftChild;
-          code = code + "0";
-        } else {
-          t.top = t.top.rightChild;
-          code = code + "1";
-        }
-      }
-      frequencyMap.put(t.top.character, new Info(t.top.freq, code));
+    System.out.println(t.weight);
+     t.traverse(t.top, "", frequencyMap);
+    // String codeList = t.traverse(t.top, "");
+    // System.out.println("CODE LIST:" + codeList);
+    //
+    // for (int i = 0; i < codeList.length(); i++){
+    //   HuffTree holder = t;
+    //   // Node pholder = t.top;
+    //   String code = "";
+    //   while (t.top.character == null){
+    //     if (codeList.substring(i, i + 1).equals("0")){
+    //       t.top = t.top.leftChild;
+    //       code = code + "0";
+    //     } else {
+    //       t.top = t.top.rightChild;
+    //       code = code + "1";
+    //     }
+    //   }
+    //   frequencyMap.put(t.top.character, new Info(t.top.freq, code));
+    //
+    // }
+    for (Map.Entry<String, Info> entry : frequencyMap.entrySet()){
+      System.out.println("Key:" + entry.getKey() + "Value:" + entry.getValue().huffCode);
     }
-
 
     // You have to close the file, just the way you would in Python.
     fr.close();
