@@ -13,11 +13,17 @@ public class Huff {
 
   PriorityQueue pq = new PriorityQueue();
   class HuffTree implements Comparable<HuffTree>{
+
+    Node top;
+    int size = 1;
+    int weight;
+
     HuffTree(int weight){
       this.weight = weight;
       this.top = top;
     }
     HuffTree(Node leftChild, Node rightChild, int weight){
+      top = new Node();
       top.this.leftChild = leftChild;
       top.this.rightChild = rightChild;
       this.weight = weight;
@@ -25,17 +31,32 @@ public class Huff {
     public int compareTo(HuffTree tree){
       if (weight >= tree.weight){
         return 1;
-      }else (weight < tree.weight){
+      } else {
         return -1;
       }
     }
     // got this method from the hints, not completely sure how it relates to PS
-    public String traverse(Node n, String s) {
+    // public String traverse(Node n, String s) {
+    //   if (n == null) {
+    //     return s;
+    //   }
+    //   if (n.rightChild == null && n.leftChild ==null) {
+    //     System.out.println(n.character + s);
+    //   }
+    //   if (n.leftChild != null) {
+    //     traverse(n.leftChild, s + "0");
+    //   }
+    //   if (n.rightChild != null) {
+    //     traverse(n.rightChild, s + "1");
+    //   }
+    // }
+
+    public String traverse (Node n, String s) {
       if (n == null) {
-        return s;
+        return;
       }
-      if (n.rightChild == null && n.leftChild ==null) {
-        System.out.println(n.character + s);
+      if (n.rightChild == null && n.leftChild == null) {
+        return s;
       }
       if (n.leftChild != null) {
         traverse(n.leftChild, s + "0");
@@ -45,20 +66,13 @@ public class Huff {
       }
     }
 
-
     class Node{
       Node rightChild;
       Node leftChild;
       Node parent;
       String character;
       int freq;
-      // public void Node(Node rightChild, Node leftChild, Node parent, String character, int freq){
-      //   this.rightChild = rightChild;
-      //   this.leftChild = leftChild;
-      //   this.parent = parent;
-      //   this.character = character;
-      //   this.freq = freq;
-      // }
+
       public String toString(){
         String out = "";
         out = out + ("Right child: " + rightChild + "/n");
@@ -69,11 +83,6 @@ public class Huff {
         return out;
       }
     }
-    Node top;
-    int size = 1;
-    int weight;
-
-
   }
   // use this instead of integer
   public class Info {
@@ -96,13 +105,9 @@ public class Huff {
        huffCode = s;
      }
    }
-  public void createTree(HashMap<String, Info> map){
-    for (Map.Entry<String, Integer> entry : map.entrySet()){
+  public void createTree(TreeMap<String, Info> map){
+    for (Map.Entry<String, Info> entry : map.entrySet()){
       System.out.println(entry.getKey());
-      // Node n;
-      // n.character = entry.getKey();
-      // n.freq = entry.getValue();
-      // HuffTree ht;
       ht = new HuffTree(entry.getValue().getFreq());
       ht.top.character = entry.getKey();
       ht.top.freq = entry.getValue().getFreq();
@@ -128,7 +133,7 @@ public class Huff {
     // Of course, you will want to read a file provided as a command-line argument.
     FileIOC fioc = new FileIOC();
     FileReader fr = fioc.openInputFile("../samples/lincoln.txt");
-    HashMap<String, Info> frequencyMap = new HashMap<>();
+    TreeMap<String, Info> frequencyMap = new TreeMap<>();
     // This lets you go through the file character by character so you can count them.
     int c;
     while ((c = fr.read()) != -1) {
@@ -145,51 +150,31 @@ public class Huff {
       // the frequency of each character, storing it in your HashMap member variable.
 
     }
-    /*
-    PriorityQueue <HuffTree> pq = new PriorityQueue <HuffTree>();
-    for (Map.Entry<String, Integer> entry : frequencyMap.entrySet()){
-      HuffTree ht = new HuffTree(n, n.freq);
-      pq.add(ht);
-    }
-      */
-
-
-    // while (pq.size() > 1) {
-    //   HuffTree t1 = pq.poll();
-    //   HuffTree t2 = pq.poll();
-    //   // I don't know what the top Node would be??
-    //   HuffTree t = new HuffTree(Node n, t1.weight() + t2.weight());
-    //   pq.add(t);
-    // }
 
     createTree(frequencyMap);
     HuffTree t = pq.poll();
-    t.traverse(t.top, "");
+    String codeList = t.traverse(t.top, "");
+    for (int i = 0; i < codeList.length(); i++){
+      Node pholder = t.top;
+      String code = "";
+      while (pholder.character == null){
+        if (codeList.substring(i, i + 1).equals("0")){
+          pholder = pholder.leftChild;
+          code = code + "0";
+        } else {
+          pholder = pholder.rightChild;
+          code = code + "1";
+        }
+      }
+      frequencyMap.put(pholder.character, new Info(pholder.freq, code));
+    }
 
 
-
-
-
-
-// System.out.println(frequencyMap.toString());
-// for (Map.Entry<String, Integer> entry : frequencyMap.entrySet()){
-//   System.out.println(entry.getKey());
-//   // Node n;
-//   // n.character = entry.getKey();
-//   // n.freq = entry.getValue();
-//   // HuffTree ht;
-//   // ht = new HuffTree();
-//   ht.top.character = entry.getKey();
-//   ht.top.freq = entry.getValue();
-// }
     // You have to close the file, just the way you would in Python.
     fr.close();
 
-
     // Here's where you want to do your STEP 2. Don't forget that you
     // will want to create a separate class for HuffTree outside this class.
-
-
 
     // USING FileIOC TO WRITE OUT TO A BINARY FILE
 
@@ -227,7 +212,6 @@ public class Huff {
         bo.write(true);
       }
     }
-
 
     // Suppose after you build your Huffman binary tree, the code for T
     // ends up being 101. Here's one way you can print that out to the binary file.
