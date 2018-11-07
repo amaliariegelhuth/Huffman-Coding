@@ -17,18 +17,16 @@ public class Huff {
       this.weight = weight;
       this.top = top;
     }
-    HuffTree(Node rightChild, Node leftChild, int weight){
-      this.rightChild = rightChild;
-      this.leftChild = leftChild;
+    HuffTree(Node leftChild, Node rightChild, int weight){
+      top.this.leftChild = leftChild;
+      top.this.rightChild = rightChild;
       this.weight = weight;
     }
     public int compareTo(HuffTree tree){
-      if (weight > tree.weight){
+      if (weight >= tree.weight){
         return 1;
-      }else if(weight < tree.weight){
+      }else (weight < tree.weight){
         return -1;
-      }else{
-        return 0;
       }
     }
     // got this method from the hints, not completely sure how it relates to PS
@@ -40,10 +38,10 @@ public class Huff {
         System.out.println(n.character + s);
       }
       if (n.leftChild != null) {
-        print(n.leftChild, s + "0");
+        traverse(n.leftChild, s + "0");
       }
       if (n.rightChild != null) {
-        print(n.rightChild, s + "1");
+        traverse(n.rightChild, s + "1");
       }
     }
 
@@ -98,22 +96,24 @@ public class Huff {
        huffCode = s;
      }
    }
-  public void createTree(HashMap<String, Integer> map){
+  public void createTree(HashMap<String, Info> map){
     for (Map.Entry<String, Integer> entry : map.entrySet()){
       System.out.println(entry.getKey());
       // Node n;
       // n.character = entry.getKey();
       // n.freq = entry.getValue();
       // HuffTree ht;
-      ht = new HuffTree(entry.getValue());
+      ht = new HuffTree(entry.getValue().getFreq());
       ht.top.character = entry.getKey();
-      ht.top.freq = entry.getValue();
+      ht.top.freq = entry.getValue().getFreq();
       pq.add(ht);
     }
     while (pq.size() > 1){
       HuffTree t1 = pq.poll();
       HuffTree t2 = pq.poll();
-      HuffTree newHT = new HuffTree(t1,t2,t1.weight + t2.weight);
+      Node n1 = t1.top();
+      Node n2 = t2.top();
+      HuffTree newHT = new HuffTree(n1, n2, t1.weight + t2.weight);
       pq.add(newHT);
     }
   }
@@ -137,9 +137,9 @@ public class Huff {
       System.out.println((char) c);
       if (frequencyMap.containsKey(Character.toString((char) c))){
         int val = frequencyMap.get(Character.toString((char) c)).getFreq();
-        frequencyMap.put(Character.toString((char) c), Info(val + 1, "") );
+        frequencyMap.put(Character.toString((char) c), new Info(val + 1, "") );
       }else{
-        frequencyMap.put(Character.toString((char) c), Info(1, ""));
+        frequencyMap.put(Character.toString((char) c), new Info(1, ""));
       }
       // This would be a good place for STEP 1, putting the code that keeps track of
       // the frequency of each character, storing it in your HashMap member variable.
@@ -162,8 +162,9 @@ public class Huff {
     //   pq.add(t);
     // }
 
-    HuffTree t = pq.poll()
-    t.traverse(t.top);
+    createTree(frequencyMap);
+    HuffTree t = pq.poll();
+    t.traverse(t.top, "");
 
 
 
@@ -213,18 +214,16 @@ public class Huff {
     bo.write(frequencyMap.size());
 
     bo.write(frequencyMap.size());
-    for (Map.Entry<String, Integer> entry : frequencyMap.entrySet()){
+    for (Map.Entry<String, Info> entry : frequencyMap.entrySet()){
       bo.write(entry.getKey(), 8);
       bo.write(entry.getValue().getFreq());
     }
-    FileReader fr = fioc.openInputFile("../samples/lincoln.txt");
-    int c;
     while ((c = fr.read()) != -1) {
-      String s = frequencyMap.get(Character.toString((char) c)).getHuffCode();
-      if (s.equals("0")){
+      String huffc = frequencyMap.get(Character.toString((char) c)).getHuffCode();
+      if (huffc.equals("0")){
         bo.write(false);
       }
-      if (s.equals("1")) {
+      if (huffc.equals("1")) {
         bo.write(true);
       }
     }
@@ -232,17 +231,17 @@ public class Huff {
 
     // Suppose after you build your Huffman binary tree, the code for T
     // ends up being 101. Here's one way you can print that out to the binary file.
-    String t = "101";
-    int i = Integer.parseInt(t, 2);
-    bo.write(i, t.length());
+    // String t = "101";
+    // int i = Integer.parseInt(t, 2);
+    // bo.write(i, t.length());
 
 
     // A boolean is the only type that has two values, so you can pass in a boolean
     // to the write() method of the BinaryOut class to print out a single bit.
     // Here's how you could write out 101 using individual bits.
-    bo.write(true);
-    bo.write(false);
-    bo.write(true);
+    // bo.write(true);
+    // bo.write(false);
+    // bo.write(true);
 
 
     // One last thing: files have to be written in bytes not bits. The BinaryOut
