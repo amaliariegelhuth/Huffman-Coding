@@ -105,10 +105,6 @@ map.get(n.character).huffCode = s;
    }
   public static void createTree(TreeMap<String, Info> map){
     for (Map.Entry<String, Info> entry : map.entrySet()){
-<<<<<<< HEAD
-      // System.out.println(entry.getKey());
-=======
->>>>>>> d3e628d4fb720fb609b6565394da0126014267dd
       HuffTree ht = new HuffTree(entry.getValue().getFreq());
       System.out.println(ht.getWeight());
       System.out.println(entry.getKey());
@@ -138,10 +134,6 @@ map.get(n.character).huffCode = s;
     int c;
     while ((c = fr.read()) != -1) {
       // Example of something to do: print out each character.
-<<<<<<< HEAD
-      // System.out.println((char) c);
-=======
->>>>>>> d3e628d4fb720fb609b6565394da0126014267dd
       if (frequencyMap.containsKey(Character.toString((char) c))){
          Integer val = frequencyMap.get(Character.toString((char) c)).freq;
         Info i = new Info(val + 1);
@@ -154,13 +146,6 @@ map.get(n.character).huffCode = s;
       // the frequency of each character, storing it in your HashMap member variable.
 
     }
-<<<<<<< HEAD
-    for (Map.Entry<String, Info> entry : frequencyMap.entrySet()){
-      System.out.println(entry.getKey());
-    }
-
-=======
->>>>>>> d3e628d4fb720fb609b6565394da0126014267dd
     createTree(frequencyMap);
     HuffTree t = pq.poll();
      t.traverse(t.top, "", frequencyMap);
