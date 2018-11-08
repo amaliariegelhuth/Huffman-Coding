@@ -27,6 +27,9 @@ public class Huff {
       top.rightChild = rightChild;
       this.weight = weight;
     }
+    public int getWeight(){
+      return weight;
+    }
     public int compareTo(HuffTree tree){
       if (weight >= tree.weight){
         return 1;
@@ -92,8 +95,10 @@ public class Huff {
    }
   public static void createTree(TreeMap<String, Info> map){
     for (Map.Entry<String, Info> entry : map.entrySet()){
-      System.out.println(entry.getKey());
+      // System.out.println(entry.getKey());
       HuffTree ht = new HuffTree(entry.getValue().getFreq());
+      System.out.println(ht.getWeight());
+      System.out.println(entry.getKey());
       ht.top.character = entry.getKey();
       ht.top.freq = entry.getValue().getFreq();
       pq.add(ht);
@@ -124,7 +129,7 @@ public class Huff {
     while ((c = fr.read()) != -1) {
 
       // Example of something to do: print out each character.
-      System.out.println((char) c);
+      // System.out.println((char) c);
       if (frequencyMap.containsKey(Character.toString((char) c))){
         int val = frequencyMap.get(Character.toString((char) c)).getFreq();
         frequencyMap.put(Character.toString((char) c), new Info(val + 1, ""));
@@ -134,6 +139,9 @@ public class Huff {
       // This would be a good place for STEP 1, putting the code that keeps track of
       // the frequency of each character, storing it in your HashMap member variable.
 
+    }
+    for (Map.Entry<String, Info> entry : frequencyMap.entrySet()){
+      System.out.println(entry.getKey());
     }
 
     createTree(frequencyMap);
