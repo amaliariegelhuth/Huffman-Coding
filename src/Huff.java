@@ -172,8 +172,6 @@ map.get(n.character).huffCode = s;
       System.out.println("Key:" + entry.getKey() + "Value:" + entry.getValue().huffCode);
     }
 
-    // You have to close the file, just the way you would in Python.
-    fr.close();
 
     // Here's where you want to do your STEP 2. Don't forget that you
     // will want to create a separate class for HuffTree outside this class.
@@ -200,19 +198,29 @@ map.get(n.character).huffCode = s;
     bo.write(s);
     bo.write(frequencyMap.size());
 
-    bo.write(frequencyMap.size());
+    // bo.write(frequencyMap.size());
     for (Map.Entry<String, Info> entry : frequencyMap.entrySet()){
-      bo.write(entry.getKey(), 8);
+      // String huff = entry.getValue().getHuffCode();
+      // int huffInt = Integer.parseInt(huff, 2);
+      // bo.write(huffInt, huff.length());
+      // bo.write(entry.getValue().getFreq());
+      bo.write(entry.getKey().charAt(0), 8);
       bo.write(entry.getValue().getFreq());
     }
-    while ((c = fr.read()) != -1) {
-      String huffc = frequencyMap.get(Character.toString((char) c)).getHuffCode();
-      if (huffc.equals("0")){
-        bo.write(false);
-      }
-      if (huffc.equals("1")) {
-        bo.write(true);
-      }
+    FileIOC newfioc = new FileIOC();
+    FileReader newfr = newfioc.openInputFile("../samples/mississippi.txt");
+    while ((c = newfr.read()) != -1) {
+      System.out.println("CHARS!");
+      String huff = frequencyMap.get(Character.toString((char) c)).getHuffCode();
+      int huffInt = Integer.parseInt(huff, 2);
+      bo.write(huffInt, huff.length());
+      // bo.write(.getFreq());
+    //   if (huffc.equals("0")){
+    //     bo.write(false);
+    //   }
+    //   if (huffc.equals("1")) {
+    //     bo.write(true);
+    //   }
     }
 
     // Suppose after you build your Huffman binary tree, the code for T
@@ -228,6 +236,8 @@ map.get(n.character).huffCode = s;
     // bo.write(true);
     // bo.write(false);
     // bo.write(true);
+    // You have to close the file, just the way you would in Python.
+    fr.close();
 
 
     // One last thing: files have to be written in bytes not bits. The BinaryOut
