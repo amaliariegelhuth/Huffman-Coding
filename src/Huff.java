@@ -45,7 +45,6 @@ public class Huff {
 
 
 
-        System.out.println("returning s : " + s);
 map.get(n.character).huffCode = s;
       }
       if (n.leftChild != null) {
@@ -111,9 +110,6 @@ map.get(n.character).huffCode = s;
     while (pq.size() > 1){
       HuffTree t1 = pq.poll();
       HuffTree t2 = pq.poll();
-      // Node n1 = t1.top;
-      // Node n2 = t2.top;
-
       HuffTree newHT = new HuffTree(t1.top, t2.top, t1.weight + t2.weight);
       pq.add(newHT);
     }
@@ -127,7 +123,7 @@ map.get(n.character).huffCode = s;
     // Here is some code that shows you how use FileIOC to read in a (not binary) file:
     // Of course, you will want to read a file provided as a command-line argument.
     FileIOC fioc = new FileIOC();
-    FileReader fr = fioc.openInputFile("../samples/mississippi.txt");
+    FileReader fr = fioc.openInputFile("../samples/lincoln.txt");
     TreeMap<String, Info> frequencyMap = new TreeMap<>();
     // This lets you go through the file character by character so you can count them.
     int c;
@@ -147,30 +143,9 @@ map.get(n.character).huffCode = s;
     }
     createTree(frequencyMap);
     HuffTree t = pq.poll();
-    System.out.println(t.weight);
      t.traverse(t.top, "", frequencyMap);
-    // String codeList = t.traverse(t.top, "");
-    // System.out.println("CODE LIST:" + codeList);
-    //
-    // for (int i = 0; i < codeList.length(); i++){
-    //   HuffTree holder = t;
-    //   // Node pholder = t.top;
-    //   String code = "";
-    //   while (t.top.character == null){
-    //     if (codeList.substring(i, i + 1).equals("0")){
-    //       t.top = t.top.leftChild;
-    //       code = code + "0";
-    //     } else {
-    //       t.top = t.top.rightChild;
-    //       code = code + "1";
-    //     }
-    //   }
-    //   frequencyMap.put(t.top.character, new Info(t.top.freq, code));
-    //
-    // }
-    for (Map.Entry<String, Info> entry : frequencyMap.entrySet()){
-      System.out.println("Key:" + entry.getKey() + "Value:" + entry.getValue().huffCode);
-    }
+
+
 
 
     // Here's where you want to do your STEP 2. Don't forget that you
@@ -198,29 +173,17 @@ map.get(n.character).huffCode = s;
     bo.write(s);
     bo.write(frequencyMap.size());
 
-    // bo.write(frequencyMap.size());
+
     for (Map.Entry<String, Info> entry : frequencyMap.entrySet()){
-      // String huff = entry.getValue().getHuffCode();
-      // int huffInt = Integer.parseInt(huff, 2);
-      // bo.write(huffInt, huff.length());
-      // bo.write(entry.getValue().getFreq());
       bo.write(entry.getKey().charAt(0), 8);
       bo.write(entry.getValue().getFreq());
     }
     FileIOC newfioc = new FileIOC();
-    FileReader newfr = newfioc.openInputFile("../samples/mississippi.txt");
+    FileReader newfr = newfioc.openInputFile("../samples/lincoln.txt");
     while ((c = newfr.read()) != -1) {
-      System.out.println("CHARS!");
       String huff = frequencyMap.get(Character.toString((char) c)).getHuffCode();
       int huffInt = Integer.parseInt(huff, 2);
       bo.write(huffInt, huff.length());
-      // bo.write(.getFreq());
-    //   if (huffc.equals("0")){
-    //     bo.write(false);
-    //   }
-    //   if (huffc.equals("1")) {
-    //     bo.write(true);
-    //   }
     }
 
     // Suppose after you build your Huffman binary tree, the code for T
