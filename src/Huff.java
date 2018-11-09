@@ -14,7 +14,6 @@ ibulman
 
 CSCI 1102 Computer Science 2
 
-
 */
 public class Huff {
 
