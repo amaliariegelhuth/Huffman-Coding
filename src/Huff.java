@@ -5,24 +5,32 @@ import java.io.IOException;
 import edu.princeton.cs.algs4.BinaryIn;
 import edu.princeton.cs.algs4.BinaryOut;
 import java.util.*;
+/*
+Amalia Riegelhuth
+amaliariegelhuth
+
+Isabel Bulman
+ibulman
+
+CSCI 1102 Computer Science 2
 
 
+*/
 public class Huff {
-  HuffTree ht = new HuffTree(0);
-  static boolean DEBUG=true;
 
+  static boolean DEBUG=true;
+  //priority queue to store all the huff trees
   static PriorityQueue <HuffTree> pq = new PriorityQueue <HuffTree>();
   static class HuffTree implements Comparable<HuffTree>{
+    Node top; //top node
+    int size = 1;//huff tree size
+    int weight; //weight of whole tree
 
-    Node top;
-    int size = 1;
-    int weight;
-
-    HuffTree(int weight){
+    HuffTree(int weight){ //constructor used when making huff trees for all of the characters
       this.weight = weight;
       top = new Node();
     }
-    HuffTree(Node leftChild, Node rightChild, int weight){
+    HuffTree(Node leftChild, Node rightChild, int weight){ //constructor used when combining trees
       top = new Node();
       top.leftChild = leftChild;
       top.rightChild = rightChild;
@@ -31,7 +39,7 @@ public class Huff {
     public int getWeight(){
       return weight;
     }
-    public int compareTo(HuffTree tree){
+    public int compareTo(HuffTree tree){ //implementing comparable
       if (weight >= tree.weight){
         return 1;
       } else {
@@ -43,17 +51,13 @@ public class Huff {
       if (n == null) {
         return;
       }
-      if (n.rightChild == null && n.leftChild == null) {
-
-
-
-
-map.get(n.character).huffCode = s;
+      if (n.rightChild == null && n.leftChild == null) { //if it is a leaf, set the character's huffcode info to the string
+        map.get(n.character).huffCode = s;
       }
-      if (n.leftChild != null) {
+      if (n.leftChild != null) { //if there is a left child, keep traversing with the left child and add 0 to string
         traverse(n.leftChild, s + "0", map);
       }
-      if (n.rightChild != null) {
+      if (n.rightChild != null) { //if there is a right child, keep traversing with the right child and add 1 to string
         traverse(n.rightChild, s + "1", map);
       }
 
@@ -77,46 +81,45 @@ map.get(n.character).huffCode = s;
       }
     }
   }
-  // use this instead of integer
+  //stores information about the character's frequency and huffcode
   public static class Info {
     int freq;
     String huffCode;
-    public Info(int f){
+    public Info(int f){ //constructor for when we first add the characters and their info to the map
       freq = f;
 
     }
-    public Info(int f, String h){
+    public Info(int f, String h){ //
       freq = f;
       huffCode = h;
 
     }
     public int getFreq() {
       return freq;
-     }
-     public void setFreq(int n) {
-       freq = n;
-     }
-     public String getHuffCode() {
-       return huffCode;
-     }
-     public void setHuffCode(String s) {
-       huffCode = s;
-     }
-   }
+    }
+    public void setFreq(int n) {
+      freq = n;
+    }
+    public String getHuffCode() {
+      return huffCode;
+    }
+    public void setHuffCode(String s) {
+      huffCode = s;
+    }
+  }
+
   public static void createTree(TreeMap<String, Info> map){
-    for (Map.Entry<String, Info> entry : map.entrySet()){
+    for (Map.Entry<String, Info> entry : map.entrySet()){ //for each entry in the frequency map, make a huff tree with weight as the frequency and set the tree's top node info to the info from the entry
       HuffTree ht = new HuffTree(entry.getValue().getFreq());
-      System.out.println(ht.getWeight());
-      System.out.println(entry.getKey());
       ht.top.character = entry.getKey();
       ht.top.freq = entry.getValue().getFreq();
-      pq.add(ht);
+      pq.add(ht); //then add it to the priority queue
     }
-    while (pq.size() > 1){
+    while (pq.size() > 1){ //for each tree in priority queue
       HuffTree t1 = pq.poll();
       HuffTree t2 = pq.poll();
-      HuffTree newHT = new HuffTree(t1.top, t2.top, t1.weight + t2.weight);
-      pq.add(newHT);
+      HuffTree newHT = new HuffTree(t1.top, t2.top, t1.weight + t2.weight); //make a tree from the two smaller trees and set the weight as the sum of the two small ones
+      pq.add(newHT); //add this new tree to the priority queue
     }
   }
 
@@ -129,16 +132,15 @@ map.get(n.character).huffCode = s;
     // Of course, you will want to read a file provided as a command-line argument.
     FileIOC fioc = new FileIOC();
     FileReader fr = fioc.openInputFile("../samples/lincoln.txt");
-    TreeMap<String, Info> frequencyMap = new TreeMap<>();
+    TreeMap<String, Info> frequencyMap = new TreeMap<>(); //map that holds the characters (as strings) and their frequencies
     // This lets you go through the file character by character so you can count them.
     int c;
     while ((c = fr.read()) != -1) {
-      // Example of something to do: print out each character.
-      if (frequencyMap.containsKey(Character.toString((char) c))){
-         Integer val = frequencyMap.get(Character.toString((char) c)).freq;
+      if (frequencyMap.containsKey(Character.toString((char) c))){ //if the map already has the character, just increase its frequency by 1
+        Integer val = frequencyMap.get(Character.toString((char) c)).freq;
         Info i = new Info(val + 1);
         frequencyMap.put(Character.toString((char) c), i );
-      }else{
+      }else{ //add the character and in the map with a frequency of 1
         Info i = new Info(1);
         frequencyMap.put(Character.toString((char) c), i);
       }
@@ -146,9 +148,9 @@ map.get(n.character).huffCode = s;
       // the frequency of each character, storing it in your HashMap member variable.
 
     }
-    createTree(frequencyMap);
-    HuffTree t = pq.poll();
-     t.traverse(t.top, "", frequencyMap);
+    createTree(frequencyMap); //greates huff tree
+    HuffTree t = pq.poll(); //takes the remaining tree out of the priority queue
+    t.traverse(t.top, "", frequencyMap); //traverses the tree and sets all of the characters' huffcode
 
 
 
@@ -180,12 +182,12 @@ map.get(n.character).huffCode = s;
 
 
     for (Map.Entry<String, Info> entry : frequencyMap.entrySet()){
-      bo.write(entry.getKey().charAt(0), 8);
-      bo.write(entry.getValue().getFreq());
+      bo.write(entry.getKey().charAt(0), 8); //for each entry key, writes it in 8 bits
+      bo.write(entry.getValue().getFreq()); //writes the values frequency
     }
     FileIOC newfioc = new FileIOC();
     FileReader newfr = newfioc.openInputFile("../samples/lincoln.txt");
-    while ((c = newfr.read()) != -1) {
+    while ((c = newfr.read()) != -1) { //goes through all the characters and translates them to huffcode which is translated by the methods to hex
       String huff = frequencyMap.get(Character.toString((char) c)).getHuffCode();
       int huffInt = Integer.parseInt(huff, 2);
       bo.write(huffInt, huff.length());
